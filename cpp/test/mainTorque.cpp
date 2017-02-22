@@ -5,7 +5,7 @@
 
 #include "ilqrsolver.h"
 #include "romeotorqueactuator.h"
-#include "costfunctionromeoactuator.h"
+#include "costRomeoTorque.h"
 
 #include <time.h>
 #include <sys/time.h>
@@ -22,9 +22,9 @@ int main()
     ILQRSolver<double,4,1>::commandVec_t u;
 
     xinit << 0.0,0.0,0.0,0.0;
-    xDes << 0.1,0.0,0.0,0.0;
+    xDes << 1.0,0.0,0.0,0.0;
 
-    unsigned int T = 50;
+    unsigned int T = 1000;
     double dt=1e-3;
     unsigned int iterMax = 100;
     double stopCrit = 1e-5;
@@ -33,8 +33,8 @@ int main()
     ILQRSolver<double,4,1>::traj lastTraj;
 
     RomeoTorqueActuator romeoActuatorModel(dt);
-    CostFunctionRomeoActuator costRomeoActuator;
-    ILQRSolver<double,4,1> testSolverRomeoActuator(romeoActuatorModel,costRomeoActuator,DISABLE_FULLDDP,ENABLE_QPBOX);
+    CostRomeoTorque costRomeoActuator;
+    ILQRSolver<double,4,1> testSolverRomeoActuator(romeoActuatorModel,costRomeoActuator,DISABLE_FULLDDP,DISABLE_QPBOX);
     testSolverRomeoActuator.FirstInitSolver(xinit,xDes,T,dt,iterMax,stopCrit);
 
     int N = 100;

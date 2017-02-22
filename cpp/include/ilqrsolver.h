@@ -154,6 +154,7 @@ public:
         }
     }
 
+public:
     void FirstInitSolver(stateVec_t& myxInit, stateVec_t& myxDes, unsigned int& myT,
                            double& mydt, unsigned int& myiterMax,double& mystopCrit)
     {
@@ -183,12 +184,14 @@ public:
         alpha = 1.0;
     }
 
+public:
     void initSolver(stateVec_t& myxInit, stateVec_t& myxDes)
     {
         xInit = myxInit;
         xDes = myxDes;
     }
 
+public:
     void solveTrajectory()
     {
         initTrajectory();
@@ -209,6 +212,7 @@ public:
         }
     }
 
+private:
     void initTrajectory()
     {
         xList[0] = xInit;
@@ -219,6 +223,7 @@ public:
         }
     }
 
+private:
     void backwardLoop()
     {
         costFunction->computeFinalCostDeriv(xList[T],xDes);
@@ -302,6 +307,7 @@ public:
         }
     }
 
+private:
     void forwardLoop()
     {
         changeAmount = 0.0;
@@ -319,14 +325,7 @@ public:
         }
     }
 
-    ILQRSolver::traj getLastSolvedTrajectory()
-    {
-        lastTraj.xList = updatedxList;
-        lastTraj.uList = updateduList;
-        lastTraj.iter = iter;
-        return lastTraj;
-    }
-
+private:
     bool isQuudefinitePositive(const commandMat_t & Quu)
     {
         lltofQuu.compute(Quu);
@@ -337,8 +336,27 @@ public:
         }
         return true;
     }
-protected:
 
+public:
+    double computeFullCost(double dt, const stateVec_t Xinit, const commandVecTab_t UTab)
+    {
+
+    }
+
+public:
+    ILQRSolver::traj getLastSolvedTrajectory()
+    {
+        lastTraj.xList = updatedxList;
+        lastTraj.uList = updateduList;
+        lastTraj.iter = iter;
+        return lastTraj;
+    }
+
+public:
+    ILQRSolver::commandR_stateC_tab_t getLastSolvedTrajectoryGains()
+    {
+       return KList;
+    }
 };
 
 #endif // ILQRSOLVER_H

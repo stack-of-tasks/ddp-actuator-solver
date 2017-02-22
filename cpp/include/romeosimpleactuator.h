@@ -29,9 +29,7 @@ private:
     stateVec_t Xreal;
     stateMat_t Id;
     stateMat_t A;
-    stateMat_t Ad;
     stateR_commandC_t B;
-    stateR_commandC_t Bd;
     double A13atan;
     double A33atan;
     stateMat_t fxBase;
@@ -41,6 +39,10 @@ private:
     commandMat_t QuuCont;
     commandR_stateC_t QuxCont;
 
+public: //temp
+    stateMat_t Ad;
+    stateR_commandC_t Bd;
+
 protected:
     // methods //
 public:
@@ -49,10 +51,11 @@ public:
     stateMat_t computeTensorContxx(const stateVec_t& nextVx);
     commandMat_t computeTensorContuu(const stateVec_t& nextVx);
     commandR_stateC_t computeTensorContux(const stateVec_t& nextVx);
+    double getR() {return R;}
 private:
+    stateVec_t computeStateDeriv(double &dt, const stateVec_t& X, const commandVec_t &U);
 protected:
-        // accessors //
-public:
+
 
 };
 

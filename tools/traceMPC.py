@@ -1,4 +1,4 @@
-import matplotlib.pyplot as pl
+from matplotlib.pyplot import *
 import csv
 
 
@@ -22,6 +22,7 @@ uListList = []
 
 ''' position '''
 path = '../_build/cpp/resultsMPC.csv'
+pathF= '../_build/cpp/resultsMPCF.csv'
 T=5;
 N = 30;
 		
@@ -31,39 +32,62 @@ with open(path,'r') as dataFile:
     i = 0
     j = -1
     for row in reader:
-		if i ==2:
-			if(j<T):
-				tauList.append(float(row[0]))
-				tauDotList.append(float(row[1]))
-				qList.append(float(row[2]))
-				qDotList.append(float(row[3]))
-				uList.append((float(row[4])))
-				j+=1
-			else:
-				tauListList.append(tauList)
-				tauDotListList.append(tauDotList)
-				qListList.append(qList)
-				qDotListList.append(qDotList)
-				uListList.append(uList)
-				tauList = [float(row[0])]
-				tauDotList = [float(row[1])]
-				qList = [float(row[2])]
-				qDotList = [float(row[3])]
-				uList = [float(row[4])]
-				j = 0
-		if i==1:
-			i = 2 			
-		if i==0:
-			T = int(row[0])
-			N = int(row[1]) - 1
-			i = 1			
- 
+        if i ==2:
+            if(j<T):
+                tauList.append(float(row[0]))
+                tauDotList.append(float(row[1]))
+                qList.append(float(row[2]))
+                qDotList.append(float(row[3]))
+                uList.append((float(row[4])))
+                j+=1
+            else:
+                tauListList.append(tauList)
+                tauDotListList.append(tauDotList)
+                qListList.append(qList)
+                qDotListList.append(qDotList)
+                uListList.append(uList)
+                tauList = [float(row[0])]
+                tauDotList = [float(row[1])]
+                qList = [float(row[2])]
+                qDotList = [float(row[3])]
+                uList = [float(row[4])]
+                j = 0
+        if i==1:
+            i = 2
+        if i==0:
+            T = int(row[0])
+            N = int(row[1]) - 1
+            i = 1
+
+tauListF= []
+tauDotListF = []
+qListF = []
+qDotListF = []
+uListF = []
+kListF = []
+
+with open(pathF,'r') as dataFile:
+    reader = csv.reader(dataFile)
+    i = 0
+    j = -1
+    for row in reader:
+        if i ==1:
+            tauListF.append(float(row[0]))
+            tauDotListF.append(float(row[1]))
+            qListF.append(float(row[2]))
+            qDotListF.append(float(row[3]))
+            uListF.append((float(row[4])))
+            kListF.append((float(row[5])))
+        if i==0:
+            i = 1
+
+
 for i in range(N):
-	finaltauList.append(tauListList[i][0])
-	finaltauDotList.append(tauDotListList[i][0])
-	finalqList.append(qListList[i][0])
-	finalqDotList.append(qDotListList[i][0])
-	finaluList.append(uListList[i][0])           
+    finaltauList.append(tauListList[i][0])
+    finaltauDotList.append(tauDotListList[i][0])
+    finalqList.append(qListList[i][0])
+    finalqDotList.append(qDotListList[i][0])
+    finaluList.append(uListList[i][0])
 
 #~ print len(tauListList[0])
 #~ print len(tauListList[1])
@@ -74,7 +98,7 @@ for i in range(N):
 #~ print tauListList[2]	
 #~ print tauListList[3]
 
-fig1 = pl.figure()
+'''fig1 = pl.figure()
 fig2 = pl.figure()
 
 ax1 = fig1.add_subplot(221)
@@ -84,11 +108,11 @@ dx1 = fig1.add_subplot(224)
 ax2 = fig2.add_subplot(111)
 
 for i in range(0,N,20):
-	ax1.plot(range(i,i+T+1,1),tauListList[i])
-	bx1.plot(range(i,i+T+1,1),tauDotListList[i])
-	cx1.plot(range(i,i+T+1,1),qListList[i])
-	dx1.plot(range(i,i+T+1,1),qDotListList[i])
-	ax2.plot(range(i,i+T+1,1),uListList[i])
+    ax1.plot(range(i,i+T+1,1),tauListList[i])
+    bx1.plot(range(i,i+T+1,1),tauDotListList[i])
+    cx1.plot(range(i,i+T+1,1),qListList[i])
+    dx1.plot(range(i,i+T+1,1),qDotListList[i])
+    ax2.plot(range(i,i+T+1,1),uListList[i])
 	
 ax1.plot(finaltauList,'g+')
 bx1.plot(finaltauDotList,'g+')
@@ -101,5 +125,28 @@ bx1.grid()
 cx1.grid()
 dx1.grid()
 ax2.grid()
-pl.show()
+pl.show()'''
 
+figure()
+subplot(221)
+plot(tauListF)
+grid()
+subplot(222)
+plot(tauDotListF)
+grid()
+subplot(223)
+plot(qListF)
+grid()
+subplot(224)
+plot(qDotListF)
+grid()
+
+figure()
+subplot(211)
+plot(uListF)
+grid()
+subplot(212)
+plot(kListF)
+grid()
+
+show()

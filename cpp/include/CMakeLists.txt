@@ -1,5 +1,8 @@
 SET(${PROJECT_NAME}_HEADERS
-        costfunctionromeoactuator.h
+		awas.h
+        costRomeoPos.h
+		costRomeoTorque.h
+		costVIA.h
         romeolinearactuator.h
         config.h
         dynamicmodel.h
@@ -7,7 +10,10 @@ SET(${PROJECT_NAME}_HEADERS
         romeotorqueactuator.h
         costfunction.h
         ilqrsolver.h
+		lqrsolver.h
         types.h
+		dcmotor.h
+        costDC.h
 )
 
 INSTALL(FILES ${${PROJECT_NAME}_HEADER} DESTINATION include)

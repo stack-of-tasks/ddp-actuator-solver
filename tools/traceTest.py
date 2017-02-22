@@ -19,6 +19,8 @@ q2ListList = []
 qDot2ListList = []
 u2ListList = []
 
+klist = []
+
 ''' position '''
 path1 = '../_build/cpp/results1.csv'
 path2 = '../_build/cpp/results2.csv'
@@ -34,6 +36,7 @@ with open(path1,'r') as dataFile1:
             q1List.append(float(row[2]))
             qDot1List.append(float(row[3]))
             u1List.append((float(row[4])))
+            klist.append((float(row[5])))
         if i==0:
             i = 1
 
@@ -97,20 +100,22 @@ grid()
 
 subplot(224)
 hold(1)
-plot(u1List)
+plot(u1List[2:])
 for i in range(N):
-    plot(u2ListList[i])
+    plot(u2ListList[i][2:])
 title('motor current',fontsize=32)
 grid()
 
-
 figure()
+plot(klist)
+
+'''figure()
 hold(1)
 plot(tau1List)
 for i in range(N):
     plot(tau2ListList[i])
 title('joint position',fontsize=32)
-grid()
+grid()'''
 
 
 show()

@@ -1,11 +1,9 @@
+#include <unistd.h>
 #include <iostream>
 #include <fstream>
 
-#include "config.h"
-
 #include "ilqrsolver.h"
 #include "romeosimpleactuator.h"
-#include "costfunctionromeoactuator.h"
 
 #include <time.h>
 #include <sys/time.h>
@@ -22,11 +20,10 @@ int main()
     ILQRSolver<double,4,1>::commandVec_t u;
 
     u << 1.0;
+    u << 0.0;
 
-    xinit << -1.0,0.0,-100.0,0.0;
+    xinit << 0.0,0.0,0.0,0.0;
     xDes << 1.0,0.0,0.0,0.0;
-
-    x = xinit;
 
     double dt=1e-3;
     unsigned int N=3000;
@@ -37,6 +34,24 @@ int main()
     uList.resize(N);
 
     RomeoSimpleActuator romeoActuatorModel(dt);
+
+    xinit[0] = -1.0;
+    xinit[2] = xinit[0]*romeoActuatorModel.getR();
+    x = xinit;
+
+    /*srand(time(NULL));
+    while(1)
+    {
+        x << rand()/(double) RAND_MAX,rand()/(double) RAND_MAX,rand()/(double) RAND_MAX,rand()/(double) RAND_MAX;
+        romeoActuatorModel.computeAllModelDeriv(dt,x,u);
+        cout << romeoActuatorModel.Ad << endl;
+        cout << "-" << endl;
+        cout << romeoActuatorModel.getfx() << endl;
+
+        cout << endl<<endl;
+        sleep(1);
+    }*/
+
 
     double last_err=0.0;
     double err = 0.0;
