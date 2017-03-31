@@ -96,10 +96,10 @@ private:
     stateVec_t Qx;
     stateMat_t Qxx;
     commandVec_t Qu;
-    commandMat_t Quu;
+    commandMat_t Quu,Quu_reg;
     Eigen::LLT<commandMat_t> lltofQuu;
     commandMat_t QuuInv;
-    commandR_stateC_t Qux;
+    commandR_stateC_t Qux,Qux_reg;
     commandVec_t k;
     commandR_stateC_t K;
     commandVecTab_t kList;
@@ -247,18 +247,22 @@ private:
 
                 Qx = costFunction->getlx() + dynamicModel->getfx().transpose() * nextVx;
                 Qu = costFunction->getlu() + dynamicModel->getfu().transpose() * nextVx;
-                Qxx = costFunction->getlxx() + dynamicModel->getfx().transpose() * (nextVxx+muEye) * dynamicModel->getfx();
-                Quu = costFunction->getluu() + dynamicModel->getfu().transpose() * (nextVxx+muEye) * dynamicModel->getfu();
-                Qux = costFunction->getlux() + dynamicModel->getfu().transpose() * (nextVxx+muEye) * dynamicModel->getfx();
+                Qxx = costFunction->getlxx() + dynamicModel->getfx().transpose() * (nextVxx) * dynamicModel->getfx();
+                Quu = costFunction->getluu() + dynamicModel->getfu().transpose() * (nextVxx) * dynamicModel->getfu();
+                Qux = costFunction->getlux() + dynamicModel->getfu().transpose() * (nextVxx) * dynamicModel->getfx();
+                Quu_reg = costFunction->getluu() + dynamicModel->getfu().transpose() * (nextVxx+muEye) * dynamicModel->getfu();
+                Qux_reg = costFunction->getlux() + dynamicModel->getfu().transpose() * (nextVxx+muEye) * dynamicModel->getfx();
 
                 if(enableFullDDP)
                 {
                     Qxx += dynamicModel->computeTensorContxx(nextVx);
                     Qux += dynamicModel->computeTensorContux(nextVx);
                     Quu += dynamicModel->computeTensorContuu(nextVx);
+                    Qux_reg += dynamicModel->computeTensorContux(nextVx);
+                    Quu_reg += dynamicModel->computeTensorContuu(nextVx);
                 }
 
-                if(!isQuudefinitePositive(Quu))
+                if(!isQuudefinitePositive(Quu_reg))
                 {
 
                     std::cout << "regularization" << std::endl; // to remove
@@ -273,7 +277,7 @@ private:
                 if(enableQPBox)
                 {
                     nWSR = 10;
-                    H = Quu;
+                    H = Quu_reg;
                     g = Qu;
                     lb = lowerCommandBounds - u;
                     ub = upperCommandBounds - u;
@@ -328,7 +332,7 @@ private:
 private:
     bool isQuudefinitePositive(const commandMat_t & Quu)
     {
-        lltofQuu.compute(Quu);
+        lltofQuu.compute(Quu_reg);
         if(lltofQuu.info() == Eigen::NumericalIssue)
         {
             std::cout << "not sdp"<< std::endl;
@@ -336,6 +340,7 @@ private:
         }
         return true;
     }
+protected:
 
 public:
     double computeFullCost(double dt, const stateVec_t Xinit, const commandVecTab_t UTab)
