@@ -91,22 +91,39 @@ with open(path2,'r') as dataFile2:
         if i==0:
             i = 1
 
-T = len(tau1List)
+desList = []
+with open("/home/flo/climbingKnee.csv") as dataFile3:
+    reader = csv.reader(dataFile3)
+    for row in reader:
+        desList.append(float(row[0]))
+desList.append(desList[-1])
+
+T = len(tau1List)/3
 time = []
-for i in range(T):
+for i in range(len(tau1List)/3):
     time.append(i*0.001)
 
 
 figure()
-hold(1)
-plot(u1List)
+subplot(311)
+plot(u1List[0:T])
 plot(u2ListList[0])
-grid()
+subplot(312)
+plot(u1List[T:2*T])
+plot(u2ListList[1])
+subplot(313)
+plot(u1List[2*T:3*T])
+plot(u2ListList[2])
 
 fig1 = figure()
 hold(1)
+#plot(time,desList)
 plot(time,tau1List[0:T],color=(0.0,0.0,0.0),linewidth=2)
-plot(time,tau2ListList[0],color=(0.5,0.5,0.5),linewidth=2)
+plot(time,tau1List[T:2*T],color=(0.0,0.0,0.0),linestyle='dashed',linewidth=2)
+plot(time,tau1List[2*T:3*T],color=(0.0,0.0,0.0),linestyle='dotted',linewidth=2)
+'''plot(time,tau2ListList[0],color=(0.5,0.5,0.5),linewidth=2)
+plot(time,tau2ListList[1],color=(0.5,0.5,0.5),linestyle='dashed',linewidth=2)
+plot(time,tau2ListList[2],color=(0.5,0.5,0.5),linestyle='dotted',linewidth=2)'''
 title('joint position',fontsize=36)
 grid()
 xlabel('time(s)',fontsize=28)
@@ -114,8 +131,21 @@ ylabel('joint angle (rad)',fontsize=28)
 #legend(['open loop (no noise)','close loop (no noise)','open loop (noise)','closed loop (noise)'],fontsize=20)
 legend(['FF','FB','FF+FB'],fontsize=20)
 
-
-
+fig1 = figure()
+hold(1)
+#plot(time,desList)
+'''plot(time,tau1List[0:T],color=(0.0,0.0,0.0),linewidth=2)
+plot(time,tau1List[T:2*T],color=(0.0,0.0,0.0),linestyle='dashed',linewidth=2)
+plot(time,tau1List[2*T:3*T],color=(0.0,0.0,0.0),linestyle='dotted',linewidth=2)'''
+plot(time,tau2ListList[0],color=(0.5,0.5,0.5),linewidth=2)
+plot(time,tau2ListList[1],color=(0.5,0.5,0.5),linestyle='dashed',linewidth=2)
+plot(time,tau2ListList[2],color=(0.5,0.5,0.5),linestyle='dotted',linewidth=2)
+title('joint position',fontsize=36)
+grid()
+xlabel('time(s)',fontsize=28)
+ylabel('joint angle (rad)',fontsize=28)
+#legend(['open loop (no noise)','close loop (no noise)','open loop (noise)','closed loop (noise)'],fontsize=20)
+legend(['FF','FB','FF+FB'],fontsize=20)
 
 
 show()

@@ -207,8 +207,6 @@ struct BenchCom::fullState BenchCom::sendCurrentCommand(double current, double j
     currentInt = (int16_t) ((current)*((4096.0*20.0*0.005)/3.0));
     jointInt = (uint16_t) (jointDes*(2048.0/M_PI));
 
-    std::cout << jointInt << std::endl;
-
     crc = 0;
     send = 0x47;
     write(ser,&send,1);

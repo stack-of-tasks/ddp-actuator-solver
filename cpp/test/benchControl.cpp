@@ -109,8 +109,8 @@ int main()
     cout << "xDes : " << xDes.transpose() << endl;
 
 
-    xStore << full_state.jointPosInt,0.0,full_state.motorPosInt,0.0;
-    xTab.push_back(xStore);
+    //xStore << full_state.jointPosInt,0.0,full_state.motorPosInt,0.0;
+    //xTab.push_back(xStore);
 
     testSolverRomeoActuator.initSolver(xinit, xDes);
     testSolverRomeoActuator.solveTrajectory();

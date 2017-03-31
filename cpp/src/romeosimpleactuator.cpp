@@ -2,13 +2,14 @@
 #include <math.h>
 #include <eigen3/unsupported/Eigen/MatrixFunctions>
 #include <sys/time.h>
+#include <iostream>
 
 #define pi M_PI
 
 /*
  * x0 -> actuator position
- * x1 -> actuator speed
- * x2 -> motor position
+ * x1 -> spring torque
+ * x2 -> actuator speed
  * x3 -> motor speed
  */
 
@@ -31,6 +32,7 @@ RomeoSimpleActuator::RomeoSimpleActuator(double& mydt,bool noiseOnParameters)
         mu = 0.52;
         Cf0 = 0.0;
         a = 0.0;
+        Cc = 0.0;
 
         /*k = 588.0;
         R = 96.1;
@@ -46,29 +48,35 @@ RomeoSimpleActuator::RomeoSimpleActuator(double& mydt,bool noiseOnParameters)
     {
         gettimeofday(&tv,NULL);
         srand(tv.tv_usec);
-        k = 588.0 + 0.0*588.0*0.1*(2.0*(rand()/(double)RAND_MAX)-1.0);
-        R = 96.1 + 96.1*0.1*(2.0*(rand()/(double)RAND_MAX)-1.0);
-        Jm = 183*1e-7 + 183*1e-7*0.1*(2.0*(rand()/(double)RAND_MAX)-1.0);
-        Jl = 0.000085 + 0.0*0.000085*0.1*(2.0*(rand()/(double)RAND_MAX)-1.0);
-        fvm = 5.65e-5 + 5.65e-5*0.1*(2.0*(rand()/(double)RAND_MAX)-1.0);
-        fvl = 0.278 + 0.0*0.278*0.1*(2.0*(rand()/(double)RAND_MAX)-1.0);
-        Kt = 0.0578 + 0.0578*0.1*(2.0*(rand()/(double)RAND_MAX)-1.0);
+        /*k = 588.0 + 1.0*588.0*0.5*(2.0*(rand()/(double)RAND_MAX)-1.0);
+        R = 96.1 + 1.0*96.1*0.5*(2.0*(rand()/(double)RAND_MAX)-1.0);
+        Jm = 183*1e-7 + 1.0*183*1e-7*0.5*(2.0*(rand()/(double)RAND_MAX)-1.0);
+        Jl = 0.000085 + 1.0*0.000085*0.5*(2.0*(rand()/(double)RAND_MAX)-1.0);
+        fvm = 5.65e-5 + 1.0*5.65e-5*0.5*(2.0*(rand()/(double)RAND_MAX)-1.0);
+        fvl = 0.278 + 1.0*0.278*0.5*(2.0*(rand()/(double)RAND_MAX)-1.0);
+        Kt = 0.0578 + 1.0*0.0578*0.5*(2.0*(rand()/(double)RAND_MAX)-1.0);
         mu = 0.52;
         Cf0 = 0.0;
-        a = 0.0;
+        a = 0.0;*/
+        k = 588.0 - 588.0*0.5;
+        R = 96.1 + 0.5*96.1*0.5;
+        Jm = 183*1e-7 + 0.5*183*1e-7*0.5;
+        Jl = 0.000085 + 0.000085*0.5;
+        fvm = 5.65e-5 - 5.65e-5*0.5;
+        fvl = 0.278 - 0.5*0.278*0.5;
+        Kt = 0.0578 - 0.0578*0.5;
+        mu = 0.52;
+        Cf0 = 0.5;
+        a = 10.0;
+        Cc = 0.0;
     }
 
     Id.setIdentity();
 
-    A <<   0.0,1.0,0.0,0.0,
-            -k/Jl,-fvl/Jl,k/(R*Jl),0.0,
-            0.0,0.0,0.0,1.0,
-            k/(R*Jm),0.0,-k/(Jm*R*R),-fvm/Jm;
-
-    /*A <<    0.0,0.0,1.0,0.0,
+    A <<   0.0,0.0,1.0,0.0,
             0.0,0.0,-k,k/R,
             0.0,1.0/Jl,-fvl/Jl,0.0,
-            0.0,-1.0/(R*Jm),0.0,-fvm/Jm;*/
+            0.0,-1.0/(R/Jm),0.0,-fvm/Jm;
 
     Ad = (dt*A).exp();
 
@@ -96,17 +104,18 @@ RomeoSimpleActuator::RomeoSimpleActuator(double& mydt,bool noiseOnParameters)
     QuuCont.setZero();
     QuxCont.setZero();
 
-    lowerCommandBounds << -2.0;
-    upperCommandBounds << 2.0;
+    lowerCommandBounds << -5.0;
+    upperCommandBounds << 5.0;
 }
 
 RomeoSimpleActuator::stateVec_t RomeoSimpleActuator::computeStateDeriv(double &dt, const stateVec_t& X, const commandVec_t &U)
 {
     stateVec_t x_dot;
-    x_dot <<    X[1,0],
-            -(fvl/Jl)*X[1,0] + (k/Jl)*((X[2,0]/R) - X[0,0]),
-            X[3,0],
-            (Kt/Jm)*U[0,0] - (fvm/Jm)*X[3,0] - (k/(Jm*R))*((X[2,0]/R) - X[0,0]) /*- ((2.0*Cf0)/(M_PI*Jm))*atan(X[1,0])*/;
+    //x_dot << A*X + B*U;
+    x_dot <<    X(2,0),
+                k*((X(3,0)/R)-X(2,0)),
+                -(fvl/Jl)*X(2,0) + (1.0/Jl)*X(1,0),
+                (Kt/Jm)*U(0,0)-(fvm/Jm)*X(3,0)-(1.0/(R*Jm))*X(1,0) ;//- (1.0/Jm)*Cf0*(2.0/M_PI)*atan(a*X(3,0));
     return x_dot;
 }
 
@@ -119,20 +128,19 @@ RomeoSimpleActuator::stateVec_t RomeoSimpleActuator::computeNextState(double& dt
     k4 = A*(X+dt*k3) + B*U;
     x_next = X + (dt/6)*(k1+2*k2+2*k3+k4);*/
 
-    x_next = Ad*X + Bd*U;
-
-    /*k1 = computeStateDeriv(dt,X,U);
+    k1 = computeStateDeriv(dt,X,U);
     k2 = computeStateDeriv(dt,X+(dt/2.0)*k1,U);
     k3 = computeStateDeriv(dt,X+(dt/2.0)*k2,U);
     k4 = computeStateDeriv(dt,X+dt*k3,U);
 
-    x_next = X + (dt/6.0)*(k1+2.0*k2+2.0*k3+k4);*/
+    x_next = X + (dt/6.0)*(k1+2.0*k2+2.0*k3+k4);
+    //x_next = Ad*X + Bd*U;
     return x_next;
 }
 
 void RomeoSimpleActuator::computeAllModelDeriv(double& dt, const stateVec_t& X,const commandVec_t& U)
 {
-    /*double dh = 1e-7;
+    double dh = 1e-7;
     stateVec_t Xp,Xm;
     Xp = X;
     Xm = X;
@@ -143,7 +151,7 @@ void RomeoSimpleActuator::computeAllModelDeriv(double& dt, const stateVec_t& X,c
         fx.col(i) = (computeNextState(dt, Xp, U) - computeNextState(dt, Xm, U))/dh;
         Xp = X;
         Xm = X;
-    }*/
+    }
 }
 
 RomeoSimpleActuator::stateMat_t RomeoSimpleActuator::computeTensorContxx(const stateVec_t& nextVx)

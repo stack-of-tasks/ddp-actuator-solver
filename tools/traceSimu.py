@@ -4,27 +4,6 @@ from numpy.random import rand
 import csv
 
 
-def frange(start, end=None, inc=None):
-    "A range function, that does accept float increments..."
-
-    if end == None:
-        end = start + 0.0
-        start = 0.0
-
-    if inc == None:
-        inc = 1.0
-
-    L = []
-    while 1:
-        next = start + len(L) * inc
-        if inc > 0 and next >= end:
-            break
-        elif inc < 0 and next <= end:
-            break
-        L.append(next)
-
-    return L
-
 tau1List = []
 tauDot1List = []
 q1List = []
@@ -91,32 +70,20 @@ with open(path2,'r') as dataFile2:
         if i==0:
             i = 1
 
-T = len(tau1List)
-time = []
-for i in range(T):
-    time.append(i*0.001)
+N = len(tau1List)/2
+pos_openLopp_NoNoise = tau1List[0:N]
+pos_closeLopp_NoNoise = tau1List[N:len(tau1List)]
+pos_openLopp_Noise = tau2ListList[0]
+pos_closeLopp_Noise = tau2ListList[1]
+u_openLopp_NoNoise = u1List[0:N]
+u_closeLopp_NoNoise = u1List[N:len(tau1List)]
+u_openLopp_Noise = tau2ListList[0]
+u_closeLopp_Noise = tau2ListList[1]
 
-
-figure()
-hold(1)
-plot(u1List)
-plot(u2ListList[0])
-grid()
-
-fig1 = figure()
-hold(1)
-plot(time,tau1List[0:T],color=(0.0,0.0,0.0),linewidth=2)
-plot(time,tau2ListList[0],color=(0.5,0.5,0.5),linewidth=2)
-title('joint position',fontsize=36)
-grid()
-xlabel('time(s)',fontsize=28)
-ylabel('joint angle (rad)',fontsize=28)
-#legend(['open loop (no noise)','close loop (no noise)','open loop (noise)','closed loop (noise)'],fontsize=20)
-legend(['FF','FB','FF+FB'],fontsize=20)
-
-
-
-
-
-show()
-
+fichier = open('posSimu.csv','w')
+fichier.write('time,pos_openLopp_NoNoise,pos_closeLopp_NoNoise,pos_openLopp_Noise,pos_closeLopp_Noise,u_openLopp_NoNoise,u_closeLopp_NoNoise,u_openLopp_Noise,u_closeLopp_Noise')
+for i in range(N):
+    fichier.write(str(float(0.001*i))+","+str(pos_openLopp_NoNoise[i])+","+str(pos_closeLopp_NoNoise[i])+","+
+                  str(pos_openLopp_Noise[i])+","+str(pos_closeLopp_Noise[i])+","+str(u_openLopp_NoNoise[i])+
+                  ","+str(u_closeLopp_NoNoise[i])+","+str(u_openLopp_Noise[i])+","+str(u_closeLopp_Noise[i])+"\n")
+fichier.close()

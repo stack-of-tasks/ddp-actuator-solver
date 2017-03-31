@@ -7,7 +7,6 @@ SET(${PROJECT_NAME}_HEADERS
         config.h
         dynamicmodel.h
         romeosimpleactuator.h
-        romeotorqueactuator.h
         costfunction.h
         ilqrsolver.h
 		lqrsolver.h
