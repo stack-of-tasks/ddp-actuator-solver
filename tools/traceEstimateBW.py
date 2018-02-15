@@ -1,5 +1,7 @@
 from IPython import embed
+from scipy.signal import hilbert
 from matplotlib.pyplot import *
+import numpy as np
 from numpy import random
 from numpy.random import rand
 import csv
@@ -30,7 +32,7 @@ nameList = []
 list = []
 
 ''' position '''
-path1 = '../_build/cpp/results.csv'
+path1 = './results.csv'
 
 with open(path1,'r') as dataFile1:
     reader = csv.reader(dataFile1)
@@ -41,7 +43,7 @@ with open(path1,'r') as dataFile1:
                 list[k].append(float(row[k]))
         if i == 1:
             i = 2;
-            N = float(row[0])
+            N = int(row[0])
             n = int(row[1])
             for k in range(n+1):
                 list.append([])
@@ -50,13 +52,31 @@ with open(path1,'r') as dataFile1:
             for k in row:
                 nameList.append(k)
 
+env1 = []
+env2 = []
+freq= []
+for i in range(N):
+    if list[5][i]==1:
+        env1.append(20*np.log(list[2][i]))
+        env2.append(20*np.log(list[3][i]))
+        freq.append(list[5][i])
+    if list[5][i]==-1:
+        env1.append(20*np.log(-list[2][i]))
+        env2.append(20*np.log(-list[3][i]))
+        freq.append(list[5][i])
 
-embed()
+figure()
+hold(1)
+plot(list[6],list[1])
+plot(list[6],list[2])
+plot(list[6],list[3])
+plot(list[6],list[4])
+plot([list[6][0],list[5][-1]],[0.707,0.707],color='k',linewidth=2.0)
+plot([list[6][0],list[5][-1]],[-0.707,-0.707],color='k',linewidth=2.0)
 
-'''for k in range(n):
-    figure()
-    plot(list[0],list[k+1])
-    title(nameList[k+1])
-    grid()
+figure()
+hold(1)
+semilogx(freq,env1)
+semilogx(freq,env2)
 
-show()'''
+show()

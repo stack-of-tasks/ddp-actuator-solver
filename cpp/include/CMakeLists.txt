@@ -13,6 +13,8 @@ SET(${PROJECT_NAME}_HEADERS
         types.h
 		dcmotor.h
         costDC.h
+		strainwaveactuator.h
+		maccepa.h
 )
 
 INSTALL(FILES ${${PROJECT_NAME}_HEADER} DESTINATION include)

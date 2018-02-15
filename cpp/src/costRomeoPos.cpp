@@ -2,7 +2,7 @@
 
 CostRomeoPos::CostRomeoPos()
 {
-    Q <<    500.0,0.0,0.0,0.0,
+    Q <<    50.0,0.0,0.0,0.0,
             0.0,0.0,0.0,0.0,
             0.0,0.0,0.0,0.0,
             0.0,0.0,0.0,0.0;
@@ -17,7 +17,7 @@ CostRomeoPos::CostRomeoPos()
 
 void CostRomeoPos::computeAllCostDeriv(const stateVec_t& X,const stateVec_t& Xdes, const commandVec_t& U)
 {
-    lx = Q*(X-Xdes);
+    lx = 0.0*Q*(X-Xdes);
     lu = R*U;
 }
 

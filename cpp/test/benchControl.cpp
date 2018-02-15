@@ -118,6 +118,7 @@ int main()
 
     for(i=0;i<N;i++)
     {
+        cout << i << endl;
         current = -lastTraj.uList[i](0,0);
         u << current;
         jointDes = xDes[0];

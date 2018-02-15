@@ -1,12 +1,12 @@
-#ifndef AWAS_H
-#define AWAS_H
+#ifndef MACCEPA_H
+#define MACCEPA_H
 
 #include "dynamicmodel.h"
 
-class Awas : public DynamicModel<double,4,2>
+class Maccepa : public DynamicModel<double,4,1>
 {
 public:
-    Awas(double& mydt,bool noiseOnParameters=0);
+    Maccepa(double& mydt);
 private:
 protected:
 
@@ -14,9 +14,9 @@ protected:
 public:
 private:
     double dt;
-private:
+public:
     double k;
-    double M;
+    //double B,C,P;
 private:
     stateVec_t Xreal;
     stateMat_t Id;
@@ -43,11 +43,11 @@ public:
     stateMat_t computeTensorContxx(const stateVec_t& nextVx);
     commandMat_t computeTensorContuu(const stateVec_t& nextVx);
     commandR_stateC_t computeTensorContux(const stateVec_t& nextVx);
-private:
+public:
     stateVec_t computeStateDeriv(double &dt, const stateVec_t& X, const commandVec_t &U);
 protected:
 
 
 };
 
-#endif
+#endif // MACCEPA_H

@@ -44,10 +44,10 @@ int main()
     for (i = 0; i < M; i++) {
 
         if (i > 1000) {
-            desList.push_back(0.04);
+            desList.push_back(1.8);
         } else {
             if (i > 500) {
-                desList.push_back(0.1);
+                desList.push_back(2.5);
             } else {
                 desList.push_back(0.0);
             }
@@ -65,7 +65,7 @@ int main()
 
     if(!MPC)
     {
-        xDes << 0.0,0.1,0.0,0.0;
+        xDes << 0.0,2.5,0.0,0.0;
         unsigned int T = 1000;
         testSolverRomeoActuator.FirstInitSolver(xinit,xDes,T,dt,iterMax,stopCrit);
 
@@ -149,7 +149,7 @@ int main()
         ofstream fichier2("resultsDC2.csv",ios::out | ios::trunc);
         fichier1 << "tau,tauDot,q,u,K" << endl;
         fichier2 << "tau,tauDot,q,u,K" << endl;
-        fichier2 << M << ',' << 1 << endl;
+        fichier2 << M << ',' << 5 << endl;
 
 
         xinit << 0.0,0.0,0.0,0.0;
@@ -212,14 +212,14 @@ int main()
 
         }
         delete noisyModel;
-        for(int j=0;j<=2;j++)
+        for(int j=0;j<=6;j++)
         {
-            cout << j << "/2" << endl;
+            cout << j << "/6" << endl;
             xinit << 0.0,0.0,0.0,0.0;
             xDes << 0.0,desList[0],0.0,0.0;
             fichier2 << xinit(1, 0) << "," << xinit(0, 0) << "," << xinit(2, 0) << "," << 0.0 << "," << 0.0
                      << endl;
-            noisyModel = new RomeoSimpleActuator(dt,1);
+            noisyModel = new RomeoSimpleActuator(dt,j+1);
             for (int i = 0; i < M; i++)
             {
                 xDes[1] = desList[i+(T/2)];

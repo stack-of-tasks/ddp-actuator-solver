@@ -19,24 +19,26 @@ BenchCom::BenchCom()
     /*config.c_iflag &= ~(IGNBRK | BRKINT | ICRNL |
                      INLCR | PARMRK | INPCK | ISTRIP | IXON);
     config.c_oflag = 0;*/
-    tty.c_cflag     &=  ~PARENB;            // Make 8n1
+    /*tty.c_cflag     &=  ~PARENB;            // Make 8n1
     tty.c_cflag     &=  ~CSTOPB;
     tty.c_cflag     &=  ~CSIZE;
     tty.c_cflag     |=  CS8;
 
     tty.c_cflag     &=  ~CRTSCTS;           // no flow control
-    tty.c_cc[VMIN]   =  1;                  // read doesn't block
-    tty.c_cc[VTIME]  =  5;                  // 0.5 seconds read timeout
+    tty.c_cc[VMIN]   =  0;                  // read doesn't block
+    tty.c_cc[VTIME]  =  1;                  // 100 mseconds read timeout
     tty.c_cflag     |=  CREAD | CLOCAL;     // turn on READ & ignore ctrl lines
+
+    tty.c_lflag &= ~ICANON;*/
 
     /* Make raw */
     cfmakeraw(&tty);
 
     /* Flush Port, then applies attributes */
-    tcflush( ser, TCIFLUSH );
+    /*tcflush( ser, TCIFLUSH );
     if ( tcsetattr ( ser, TCSANOW, &tty ) != 0) {
         std::cout << "Error " << errno << " from tcsetattr" << std::endl;
-    }
+    }*/
 
     current_offset = 2048.0;
 

@@ -39,7 +39,7 @@ int main()
     RomeoSimpleActuator* noisyModel=NULL;
     CostRomeoPos cost;
 
-    bool readTrajFile = true;
+    bool readTrajFile = false;
     if(readTrajFile)
     {
         M = 0;

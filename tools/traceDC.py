@@ -148,5 +148,9 @@ ylabel('joint angle (rad)',fontsize=28)
 legend(['FF','FB','FF+FB'],fontsize=20)
 
 
+figure()
+plot(time,tau1List[2*T:3*T],linewidth=2)
+for i in range(N):
+    plot(time,tau2ListList[3*i+2],linewidth=2)
 show()
 
