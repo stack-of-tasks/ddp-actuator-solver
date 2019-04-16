@@ -13,7 +13,7 @@
  * x3 -> kart veolicity
  */
 
-ModelLinear::ModelLinear(double& mydt, bool noiseOnParameters)
+ModelLinear::ModelLinear(double& mydt, bool )
 {
   stateNb = 2;
   commandNb = 1;
@@ -46,17 +46,19 @@ ModelLinear::ModelLinear(double& mydt, bool noiseOnParameters)
   upperCommandBounds << 1.0;
 }
 
-ModelLinear::stateVec_t ModelLinear::computeDeriv(double&, const stateVec_t& X,
-    const commandVec_t &U)
+ModelLinear::stateVec_t ModelLinear::
+computeDeriv(double&, const stateVec_t& X,
+	     const commandVec_t &U)
 {
   dX[0] = X[1];
   dX[1] = U[0];
   return dX;
 }
 
-ModelLinear::stateVec_t ModelLinear::computeNextState(double& dt,
-    const stateVec_t& X,
-    const commandVec_t& U)
+ModelLinear::stateVec_t ModelLinear::
+computeNextState(double& ,
+		 const stateVec_t& X,
+		 const commandVec_t& U)
 {
   /*k1 = computeDeriv(dt, X, U);
   k2 = computeDeriv(dt, X + (dt / 2) * k1, U);
@@ -67,8 +69,10 @@ ModelLinear::stateVec_t ModelLinear::computeNextState(double& dt,
   return x_next;
 }
 
-void ModelLinear::computeModelDeriv(double& dt, const stateVec_t& X,
-                                    const commandVec_t& U)
+void ModelLinear::
+computeModelDeriv(double& ,
+		  const stateVec_t& ,
+		  const commandVec_t& )
 {
   /*double dh = 1e-7;
   stateVec_t Xp, Xm;
