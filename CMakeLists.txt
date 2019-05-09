@@ -15,7 +15,10 @@ SET(PROJECT_URL "https://github.com/stack-of-tasks/ddp-actuator-solver")
 
 SETUP_PROJECT()
 
-ADD_REQUIRED_DEPENDENCY("qpOASES")
+SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/find-external/qpOASES")
+FIND_PACKAGE("qpOASES" REQUIRED)
+INCLUDE_DIRECTORIES(SYSTEM ${qpOASES_INCLUDE_DIRS})
+
 # Add eigen3 as another needed dependency
 ADD_REQUIRED_DEPENDENCY("eigen3 >= 3.0.5")
 
