@@ -55,7 +55,7 @@ PyreneActuator::stateVec_t PyreneActuator::computeStateDeriv(double&, const stat
 {
   stateVec_t dX;
   dX[0] = X[1];
-  dX[1] = ((1/J) * (K * U[0] - F_v * X[1] - F_s * tanh(mu * X[1])) - ((M+L)*g/J) * (cos(X[0])*c_x + sin(X[0])*c_y)); //TODO /M & TAU
+  dX[1] = ((1/J) * (K * U[0] - F_v * X[1] - F_s * tanh(mu * X[1])) - ((M+L)*g/J) * (cos(X[0])*c_x + sin(X[0])*c_y));
   return dX;
 }
 
@@ -83,36 +83,9 @@ void PyreneActuator::computeModelDeriv(double& dt, const stateVec_t& X,const com
     Xp[i] += dh / 2;
     Xm[i] -= dh / 2;
     fx.col(i) = (computeNextState(dt, Xp, U) - computeNextState(dt, Xm, U)) / dh;
-    // std::cout << computeNextState(dt, Xp, U) - computeNextState(dt, Xm, U) << std::endl;
     Xp = X;
     Xm = X;
   }
-  // std::cout << "fx" << std::endl;
-  // std::cout << fx << std::endl;
-  
-  // stateVec_t dX;
-  // // dX = computeStateDeriv(dt, X, U);
-  // std::cout << "fx" << std::endl;
-  // std::cout << fx << std::endl;
-  // std::cout << "X0" << std::endl;
-  // std::cout << X[0] << std::endl;
-  // fx(1,0) = (g/J) * (-cos(X[0])*c_y + sin(X[0])*c_x);
-  // std::cout << "fx" << std::endl;
-  // std::cout << fx << std::endl;
-  
-  // stateMat_t matFxx;
-  // // std::cout << "matFxx" << std::endl;
-  // matFxx << (g/J) * (sin(X[0])*c_y + cos(X[0])*c_x), 0.0,
-  //           0.0, 0.0;
-  // // // std::cout << matFxx << std::endl;
-  // fxx[1] = matFxx;
-  // // std::cout << fxx[0] << std::endl;
-  // std::cout << fxx[1] << std::endl;
-  // fx(1) = (1/J) * (-F_v); //TODO F_s
-  // fu(1) = (1/J) * K;
-  
-  // fxx(1,0) = 0.0;//TODO F_s
-
 }
 
 PyreneActuator::stateMat_t PyreneActuator::computeTensorContxx(const stateVec_t& )

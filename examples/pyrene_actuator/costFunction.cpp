@@ -55,8 +55,6 @@ void CostFunctionPyreneActuator::computeTauConstraintsAndDeriv(const commandVec_
     TauConstraints << exp(alphaTau * maxTau) + exp(alphaTau * minTau);
     dTauConstraints << alphaTau*alphaTau * K * (exp(alphaTau * maxTau) - exp(alphaTau * minTau));
     ddTauConstraints << pow(alphaTau, 4.0) * K*K * (exp(alphaTau * maxTau) - exp(alphaTau * minTau));
-    // std::cout << TauConstraints << std::endl;
-    // std::cout << dTauConstraints << std::endl; 
 }
 
 void CostFunctionPyreneActuator::computeConstraintsAndDeriv(const stateVec_t& X)

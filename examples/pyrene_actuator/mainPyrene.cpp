@@ -16,12 +16,10 @@ int main()
     struct timeval tbegin,tend;
     double texec=0.0;
 
-    DDPSolver<double,2,1>::stateVec_t xinit,xDes,x;
-    DDPSolver<double,2,1>::commandVec_t u;
+    DDPSolver<double,2,1>::stateVec_t xinit,xDes;
 
-
-    xinit << -0.005,0.0;
-    xDes  << -0.001,0.0;
+    xinit << -1.29653,0.973714;
+    xDes  << -1.3,0;
 
     unsigned int T = 50;
     double dt=1e-3;
