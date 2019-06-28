@@ -10,6 +10,8 @@ macro(_local_test_ddp)
 endmacro()
 
 SET(source_files
+  pyrene_actuator/costFunction.cpp
+  pyrene_actuator/PyreneActuator.cpp
   romeo_actuator/costfunctionromeoactuator.cpp
   romeo_actuator/romeosimpleactuator.cpp
   romeo_actuator/romeotorqueactuator.cpp
@@ -22,6 +24,8 @@ SET(source_files
 )
 
 SET(header_files
+  pyrene_actuator/costFunction.hh
+  pyrene_actuator/PyreneActuator.hh
   romeo_actuator/costfunctionromeoactuator.hh
   romeo_actuator/romeosimpleactuator.hh
   romeo_actuator/romeotorqueactuator.hh
@@ -30,6 +34,10 @@ SET(header_files
   )
 
 ADD_LIBRARY(${PROJECT_NAME}-examples SHARED ${source_files})
+SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/find-external/qpOASES")
+FIND_PACKAGE("qpOASES" REQUIRED)
+INCLUDE_DIRECTORIES(SYSTEM ${qpOASES_INCLUDE_DIRS})
+
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}-examples ${qpOASES_LIBRARIES})
 PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME}-examples qpOASES)    
 PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME}-examples eigen3)
@@ -37,6 +45,7 @@ PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME}-examples eigen3)
 INSTALL(TARGETS ${PROJECT_NAME}-examples LIBRARY DESTINATION lib)
 INSTALL(FILES ${header_files} DESTINATION include/ddp-actuator-solver/examples)
 
+ADD_SUBDIRECTORY(pyrene_actuator)
 ADD_SUBDIRECTORY(romeo_actuator)
 ADD_SUBDIRECTORY(temperature_control)
 ADD_SUBDIRECTORY(linear)
