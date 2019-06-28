@@ -47,11 +47,6 @@ int main()
     xList = lastTraj.xList;
     uList = lastTraj.uList;
     unsigned int iter = lastTraj.iter;
-    cout << costFunction.Constraints << endl;
-    cout << costFunction.dConstraints << endl;
-    cout << costFunction.running_cost << endl;
-    cout << costFunction.TauConstraints << endl;
-    cout << costFunction.dTauConstraints << endl;
     texec=((double)(1000*(tend.tv_sec-tbegin.tv_sec)+((tend.tv_usec-tbegin.tv_usec)/1000)))/1000.;
     texec /= N;
 

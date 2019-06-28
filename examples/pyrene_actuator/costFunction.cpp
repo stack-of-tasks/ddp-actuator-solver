@@ -31,9 +31,6 @@ CostFunctionPyreneActuator::CostFunctionPyreneActuator()
 void CostFunctionPyreneActuator::setTauLimit(double limit)
 {
     tauLim = limit;
-    std::cout << "taulim" << std::endl;
-    std::cout << tauLim << std::endl;
-
 }
 
 void CostFunctionPyreneActuator::setJointLimit(double limitUp, double limitDown)
