@@ -1,4 +1,4 @@
-#include "costFunction.hh"
+#include "pyreneCostFunction.hh"
 #include <iostream>
 #include <math.h>
 #include <cmath>     
@@ -9,7 +9,7 @@ const double CostFunctionPyreneActuator::K = 10.6;
 
 CostFunctionPyreneActuator::CostFunctionPyreneActuator()
 {
-    Q << 10.0, 0.0,
+    Q << 20.0, 0.0,
          0.0, 0.01; 
     W << 1.0, 0.0,
          0.0, 0.01; 

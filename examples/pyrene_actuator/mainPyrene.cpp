@@ -3,7 +3,7 @@
 
 #include <ddp-actuator-solver/ddpsolver.hh>
 #include "PyreneActuator.hh"
-#include "costFunction.hh"
+#include "pyreneCostFunction.hh"
 
 #include <time.h>
 #include <sys/time.h>

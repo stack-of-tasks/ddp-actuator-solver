@@ -10,7 +10,7 @@ macro(_local_test_ddp)
 endmacro()
 
 SET(source_files
-  pyrene_actuator/costFunction.cpp
+  pyrene_actuator/pyreneCostFunction.cpp
   pyrene_actuator/PyreneActuator.cpp
   romeo_actuator/costfunctionromeoactuator.cpp
   romeo_actuator/romeosimpleactuator.cpp
@@ -24,7 +24,7 @@ SET(source_files
 )
 
 SET(header_files
-  pyrene_actuator/costFunction.hh
+  pyrene_actuator/pyreneCostFunction.hh
   pyrene_actuator/PyreneActuator.hh
   romeo_actuator/costfunctionromeoactuator.hh
   romeo_actuator/romeosimpleactuator.hh
