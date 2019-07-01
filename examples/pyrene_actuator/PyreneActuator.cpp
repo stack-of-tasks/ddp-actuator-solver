@@ -8,8 +8,7 @@ const double PyreneActuator::J = 1.4331;
 const double PyreneActuator::K = 10.6; 
 const double PyreneActuator::F_v = 0.0337;
 const double PyreneActuator::F_s = 0.9089;
-const double PyreneActuator::M =  9.2007e3;
-const double PyreneActuator::L =  20.0e3;
+const double PyreneActuator::M =  9.2007;
 const double PyreneActuator::c_y = -0.0549/M; //TODO /M
 const double PyreneActuator::c_x = 3.0835/M; //TODO /M
 const double PyreneActuator::mu = 1000.0;
@@ -24,6 +23,10 @@ PyreneActuator::PyreneActuator()
 {
   stateNb=2;
   commandNb=1;
+
+  L =  0.0;
+  l_y = c_y;
+  l_x = c_x;
 
   Id.setIdentity();
 
@@ -49,13 +52,34 @@ PyreneActuator::PyreneActuator()
   upperCommandBounds << 1.0;
 }
 
+void PyreneActuator::setLoadParam(const double& mass, const double& coordX, const double& coordY)
+{
+  L =  mass;
+  l_y = coordY;
+  l_x = coordX;
+  std::cout << " L : " << L << std::endl; 
+  std::cout << " l_y : " << l_y << std::endl; 
+  std::cout << " l_x : " << l_x << std::endl; 
+}
+
+void PyreneActuator::setLoadMass(const double& mass)
+{
+  L = mass;
+  std::cout << " L : " << L << std::endl; 
+}
+
+void PyreneActuator::removeLoad()
+{
+  L = 0.0;
+}
 
 PyreneActuator::stateVec_t PyreneActuator::computeStateDeriv(double&, const stateVec_t& X,
     const commandVec_t &U)
 {
   stateVec_t dX;
   dX[0] = X[1];
-  dX[1] = ((1/J) * (K * U[0] - F_v * X[1] - F_s * tanh(mu * X[1])) - ((M+L)*g/J) * (cos(X[0])*c_x + sin(X[0])*c_y));
+  dX[1] = (1/J) * (K * U[0] - F_v * X[1] - F_s * tanh(mu * X[1])) - (M*g/J) * (cos(X[0])*c_x + sin(X[0])*c_y) \
+          - (L*g/J) * (cos(X[0])*l_x + sin(X[0])*l_y);
   return dX;
 }
 

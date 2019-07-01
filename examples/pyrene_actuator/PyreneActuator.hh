@@ -7,6 +7,9 @@ class PyreneActuator : public DynamicModel<double,2,1>
 {
 public:
     PyreneActuator();
+    void setLoadParam(const double& mass, const double& coordX, const double& coordY);
+    void setLoadMass(const double& mass);
+    void removeLoad();
     stateVec_t computeStateDeriv(double&, const stateVec_t& X, const commandVec_t &U);
     stateVec_t computeNextState(double& dt, const stateVec_t& X, const commandVec_t &U);
     void computeModelDeriv(double& dt, const stateVec_t& X, const commandVec_t &U);
@@ -19,13 +22,16 @@ public:
     static const double F_v;
     static const double F_s;
     static const double M;
-    static const double L; //load
     static const double c_x;
     static const double c_y;
     static const double mu;
     static const double g;
 
 private:
+    
+    double L; //load
+    double l_x;
+    double l_y;
     stateVec_t Xreal;
     stateMat_t Id;
     stateMat_t A;
