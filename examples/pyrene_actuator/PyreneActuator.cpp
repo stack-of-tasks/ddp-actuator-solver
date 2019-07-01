@@ -4,13 +4,18 @@
 #include "PyreneActuator.hh"
 #define pi M_PI
 
-const double PyreneActuator::J = 1.4331;
 const double PyreneActuator::K = 10.6; 
-const double PyreneActuator::F_v = 0.0337;
-const double PyreneActuator::F_s = 0.9089;
-const double PyreneActuator::M =  9.2007;
-const double PyreneActuator::c_y = -0.0549/M; //TODO /M
-const double PyreneActuator::c_x = 3.0835/M; //TODO /M
+const double PyreneActuator::J_j = 0.5878;
+const double PyreneActuator::F_vj = 0.4757;
+const double PyreneActuator::F_sj = 0.5403;
+const double PyreneActuator::offset_j = -0.3012;
+const double PyreneActuator::J_m = 0.21;
+const double PyreneActuator::F_vm = 5.6714;
+const double PyreneActuator::F_sm = 4.0420;
+const double PyreneActuator::offset_m = 0.5572;
+const double PyreneActuator::M = 9.2007;
+const double PyreneActuator::c_y = 1.1005/M;
+const double PyreneActuator::c_x = -0.0981/M; 
 const double PyreneActuator::mu = 1000.0;
 const double PyreneActuator::g = -9.81;
 
@@ -23,18 +28,17 @@ PyreneActuator::PyreneActuator()
 {
   stateNb=2;
   commandNb=1;
+  J = J_m + J_j;
+  F_v = F_vm + F_vj;
+  F_s = F_sm + F_sj; 
 
   L =  0.0;
   l_y = c_y;
   l_x = c_x;
 
-  Id.setIdentity();
-
   fu << 0.0, K/J;
   fx << 0.0, 1.0,
         0.0, -F_v/J;
-  // fx.setZero();
-  // fu.setZero();
 
   fxx[0].setZero();
   fxx[1].setZero();
@@ -77,9 +81,10 @@ PyreneActuator::stateVec_t PyreneActuator::computeStateDeriv(double&, const stat
     const commandVec_t &U)
 {
   stateVec_t dX;
+
   dX[0] = X[1];
   dX[1] = (1/J) * (K * U[0] - F_v * X[1] - F_s * tanh(mu * X[1])) - (M*g/J) * (cos(X[0])*c_x + sin(X[0])*c_y) \
-          - (L*g/J) * (cos(X[0])*l_x + sin(X[0])*l_y);
+          - (L*g/J) * (cos(X[0])*l_x + sin(X[0])*l_y) - (offset_m + offset_j);
   return dX;
 }
 

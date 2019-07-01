@@ -17,6 +17,7 @@ public:
     void computeTauConstraintsAndDeriv(const commandVec_t& U);
 
     static const double K;
+    static const double offset_m;
     
 private:
     stateMat_t Q;

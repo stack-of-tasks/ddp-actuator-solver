@@ -17,10 +17,15 @@ public:
     commandMat_t computeTensorContuu(const stateVec_t& nextVx);
     commandR_stateC_t computeTensorContux(const stateVec_t& nextVx);
 
-    static const double J;
+    static const double J_j;
     static const double K;
-    static const double F_v;
-    static const double F_s;
+    static const double F_vj;
+    static const double F_sj;
+    static const double J_m;
+    static const double F_vm;
+    static const double F_sm;
+    static const double offset_m;
+    static const double offset_j;
     static const double M;
     static const double c_x;
     static const double c_y;
@@ -28,20 +33,12 @@ public:
     static const double g;
 
 private:
-    
+    double J;
+    double F_v;
+    double F_s;
     double L; //load
     double l_x;
     double l_y;
-    stateVec_t Xreal;
-    stateMat_t Id;
-    stateMat_t A;
-    stateMat_t Ad;
-    stateR_commandC_t B;
-    stateR_commandC_t Bd;
-    double A13atan;
-    double A33atan;
-    stateMat_t fxBase;
-    stateR_commandC_t fuBase;
 
     stateMat_t QxxCont;
     commandMat_t QuuCont;

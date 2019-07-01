@@ -5,11 +5,12 @@
 
 using namespace std;   
 
-const double CostFunctionPyreneActuator::K = 10.6; 
+const double CostFunctionPyreneActuator::K = 10.6;
+const double CostFunctionPyreneActuator::offset_m = 0.5572; 
 
 CostFunctionPyreneActuator::CostFunctionPyreneActuator()
 {
-    Q << 20.0, 0.0,
+    Q << 100.0, 0.0,
          0.0, 0.01; 
     W << 1.0, 0.0,
          0.0, 0.01; 
@@ -47,8 +48,8 @@ void CostFunctionPyreneActuator::setJointVelLimit(double limitUp, double limitDo
 
 void CostFunctionPyreneActuator::computeTauConstraintsAndDeriv(const commandVec_t& U)
 {
-    double maxTau = 1 - alphaTau * (tauLim - K*U[0]);
-    double minTau = 1 - alphaTau * (K*U[0] + tauLim);   
+    double maxTau = 1 - alphaTau * (tauLim - (K*U[0] - offset_m));
+    double minTau = 1 - alphaTau * ((K*U[0] - offset_m) + tauLim);   
     TauConstraints << exp(alphaTau * maxTau) + exp(alphaTau * minTau);
     dTauConstraints << alphaTau*alphaTau * K * (exp(alphaTau * maxTau) - exp(alphaTau * minTau));
     ddTauConstraints << pow(alphaTau, 4.0) * K*K * (exp(alphaTau * maxTau) - exp(alphaTau * minTau));
