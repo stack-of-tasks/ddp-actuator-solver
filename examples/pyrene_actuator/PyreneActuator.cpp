@@ -13,11 +13,11 @@ const double PyreneActuator::J_m = 0.21;
 const double PyreneActuator::F_vm = 5.6714;
 const double PyreneActuator::F_sm = 4.0420;
 const double PyreneActuator::offset_m = 0.5572;
-const double PyreneActuator::M = 9.2007;
+const double PyreneActuator::M = 4.5667;
 const double PyreneActuator::c_y = 1.1005/M;
 const double PyreneActuator::c_x = -0.0981/M; 
 const double PyreneActuator::mu = 1000.0;
-const double PyreneActuator::g = -9.81;
+const double PyreneActuator::g = 9.81;
 
 /*
  * x0 -> actuator position

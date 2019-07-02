@@ -10,7 +10,7 @@ const double CostFunctionPyreneActuator::offset_m = 0.5572;
 
 CostFunctionPyreneActuator::CostFunctionPyreneActuator()
 {
-    Q << 100.0, 0.0,
+    Q << 10.0, 0.0,
          0.0, 0.01; 
     W << 1.0, 0.0,
          0.0, 0.01; 
@@ -29,18 +29,39 @@ CostFunctionPyreneActuator::CostFunctionPyreneActuator()
     alphaTau = 0.01;
 }
 
-void CostFunctionPyreneActuator::setTauLimit(double limit)
+
+void CostFunctionPyreneActuator::setCostGainState(const stateMat_t& Q_new)
+{
+    Q = Q_new;
+}
+
+void CostFunctionPyreneActuator::setCostGainStateConstraint(const stateMat_t& W_new)
+{
+    W = W_new;
+}
+
+void CostFunctionPyreneActuator::setCostGainCommand(const commandMat_t& R_new)
+{
+    R = R_new;
+}
+
+void CostFunctionPyreneActuator::setCostGainTorqueConstraint(const commandMat_t& P_new)
+{
+    P = P_new;
+}
+
+void CostFunctionPyreneActuator::setTauLimit(const double& limit)
 {
     tauLim = limit;
 }
 
-void CostFunctionPyreneActuator::setJointLimit(double limitUp, double limitDown)
+void CostFunctionPyreneActuator::setJointLimit(const double& limitUp, const double& limitDown)
 {
     jointLim.push_back(limitUp);
     jointLim.push_back(limitDown);
 }
 
-void CostFunctionPyreneActuator::setJointVelLimit(double limitUp, double limitDown)
+void CostFunctionPyreneActuator::setJointVelLimit(const double& limitUp, const double& limitDown)
 {
     jointVelLim.push_back(limitUp);
     jointVelLim.push_back(limitDown);
