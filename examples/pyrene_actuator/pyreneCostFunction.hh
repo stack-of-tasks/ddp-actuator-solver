@@ -34,11 +34,11 @@ private:
     double dt;
     double tauLim;
     double alphaTau;
+    double lambdaLimVel;
+    double lambdaLimPos;
     std::vector<double> jointLim;
     std::vector<double> jointVelLim;
         
-    double lambdaLim;
-
     stateVec_t Constraints;
     stateMat_t dConstraints;  
     stateMat_t ddConstraints;

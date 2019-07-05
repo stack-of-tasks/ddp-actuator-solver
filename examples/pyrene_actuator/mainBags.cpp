@@ -50,7 +50,7 @@ int main (int argc, char *argv[])
 
     unsigned int T = 50;
     double dt=1e-3;
-    unsigned int iterMax = 100;
+    unsigned int iterMax = 10;
     double stopCrit = 1e-3; //0.01;
     DDPSolver<double,2,1>::stateVecTab_t xList;
     DDPSolver<double,2,1>::commandVecTab_t uList;
@@ -61,6 +61,10 @@ int main (int argc, char *argv[])
     costFunction.setTauLimit(70);
     costFunction.setJointLimit(0.0, -2.35619449019);
     costFunction.setJointVelLimit(30.0, -30.0);
+    CostFunction<double,2,1>::stateMat_t Q;
+    Q << 100.0,0.0,0.0,0.01;
+    costFunction.setCostGainState(Q);
+    // PyreneActuator.setLoadMass(20.0);
     DDPSolver<double,2,1> testSolverActuator(PyreneActuator,costFunction,DISABLE_FULLDDP,DISABLE_QPBOX); 
 
     double dx_joint;
@@ -68,40 +72,29 @@ int main (int argc, char *argv[])
     xinit << vec_joint_pos[0],
              dx_joint;
     
-         
-    for (int i=0; i<999; i++) {
+    unsigned int nbIterTestMax=1000.0;
+    unsigned int iter;    
+    testSolverActuator.FirstInitSolver(xinit,xDes,T,dt,iterMax,stopCrit);
+
+    for (int i=0; i<nbIterTestMax-1; i++) {
 
         xDes << vec_joint_pos[i+1], 0.0; 
-        
-        testSolverActuator.FirstInitSolver(xinit,xDes,T,dt,iterMax,stopCrit);
-
-        int N = 100;
         gettimeofday(&tbegin,NULL);
-        for(int i=0;i<N;i++) testSolverActuator.solveTrajectory();
-        gettimeofday(&tend,NULL);
-
+        
+        testSolverActuator.initSolver(xinit,xDes);
+        testSolverActuator.solveTrajectory();
         lastTraj = testSolverActuator.getLastSolvedTrajectory();
+        gettimeofday(&tend,NULL);
         xList = lastTraj.xList;
         uList = lastTraj.uList;
-        unsigned int iter = lastTraj.iter;
+        iter = lastTraj.iter;
 
-        xinit << xList[T](0,0),
-                 xList[T](1,0);
-
-
-        texec=((double)(1000*(tend.tv_sec-tbegin.tv_sec)+((tend.tv_usec-tbegin.tv_usec)/1000)))/1000.;
-        texec /= N;
+        xinit << xList[1](0,0),
+                 xList[1](1,0);
 
 
-        // cout << costFunction.running_cost << endl;
-        // cout << costFunction.TauConstraints << endl;
-        // cout << costFunction.dTauConstraints << endl;
-        cout << endl;
-        cout << "temps d'execution total du solveur ";
-        cout << texec << endl;
-        cout << "temps d'execution par pas de temps ";
-        cout << texec/T << endl;
-        cout << "Nombre d'itérations : " << iter << endl;
+        texec+=((double)(tend.tv_sec-tbegin.tv_sec)*1000.0+((tend.tv_usec-tbegin.tv_usec)/1000.0));
+        cout << "texec:" << texec << std::endl;
 
         string ResultNumber;
         ostringstream convert;
@@ -132,25 +125,20 @@ int main (int argc, char *argv[])
         ofstream fichier(("results_sinu/results_sinu.csv"),ios::out | ios::app);
         if(fichier)
         {   
-            // for(int i=0;i<T;i++){
-            //     fichier << xList[i](0,0) << "," << xList[i](1,0) << "," << uList[i](0,0) << endl;
-            // } 
-            fichier << xList[T](0,0) << "," <<  xDes[0] << "," << xList[T](1,0) << "," << xDes[1] << "," << uList[T-1](0,0) << endl;
+            fichier << xList[1](0,0) << "," <<  xDes[0] << "," << xList[1](1,0) << "," << xDes[1] << "," << uList[0](0,0) << endl;
             fichier.close();
-            // fichier << "tau,q,qDot,theta_m,tau_ext,u" << endl;
-            // for(int i=0;i<T;i++){
-            //     fichier << xList[i](0,0) << "," << xList[i](1,0) << "," << xList[i](2,0) << "," << xList[i](3,0) << "," << 
-            //     xList[i](4,0) << "," << uList[i](0,0) << endl;
-            // } 
-            // fichier << xList[T](0,0) << "," << xList[T](1,0) << "," << xList[T](2,0) << "," << xList[T](3,0) << "," << 
-            // xList[T](4,0) << "," << uList[T-1](0,0) << endl;
-            // fichier.close();
         }
         else{
             cerr << "erreur ouverte fichier" << endl;
         }
     }
-   
+   cout << endl;
+   cout << "temps d'execution total du solveur ";
+   cout << texec << endl;
+   cout << "temps d'execution par pas de temps ";
+   cout << texec/(double)nbIterTestMax << endl;
+   cout << "Nombre d'itérations : " << iter << endl;
+
     return 0;
 
 }

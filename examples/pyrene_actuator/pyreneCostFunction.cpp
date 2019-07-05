@@ -25,8 +25,9 @@ CostFunctionPyreneActuator::CostFunctionPyreneActuator()
     final_cost = 0.0;
     running_cost = 0.0;
     tauLim = 0.0;
-    lambdaLim = 10.0;
-    alphaTau = 0.01;
+    lambdaLimPos = 10.0;
+    lambdaLimVel = 1.0;
+    alphaTau = 0.5;
 }
 
 
@@ -73,26 +74,26 @@ void CostFunctionPyreneActuator::computeTauConstraintsAndDeriv(const commandVec_
     double minTau = 1 - alphaTau * ((K*U[0] - offset_m) + tauLim);   
     TauConstraints << exp(alphaTau * maxTau) + exp(alphaTau * minTau);
     dTauConstraints << alphaTau*alphaTau * K * (exp(alphaTau * maxTau) - exp(alphaTau * minTau));
-    ddTauConstraints << pow(alphaTau, 4.0) * K*K * (exp(alphaTau * maxTau) - exp(alphaTau * minTau));
+    ddTauConstraints << pow(alphaTau, 4.0) * K*K * (exp(alphaTau * maxTau) + exp(alphaTau * minTau));
 }
 
 void CostFunctionPyreneActuator::computeConstraintsAndDeriv(const stateVec_t& X)
 {
-    double maxJoint = 1 - lambdaLim * (jointLim[0] - X[0]);
-    double minJoint = 1 - lambdaLim * (X[0] - jointLim[1]);    
-    Constraints[0] = exp(lambdaLim * maxJoint) + exp(lambdaLim * minJoint);
+    double maxJoint = 1 - lambdaLimPos * (jointLim[0] - X[0]);
+    double minJoint = 1 - lambdaLimPos * (X[0] - jointLim[1]);    
+    Constraints[0] = exp(lambdaLimPos * maxJoint) + exp(lambdaLimPos * minJoint);
 
-    double maxJointVel = 1 - lambdaLim * (jointVelLim[0] - X[0]);
-    double minJointVel = 1 - lambdaLim * (X[0] - jointVelLim[1]);    
-    Constraints[1] = exp(lambdaLim * maxJointVel) + exp(lambdaLim * minJointVel);
+    double maxJointVel = 1 - lambdaLimVel * (jointVelLim[0] - X[0]);
+    double minJointVel = 1 - lambdaLimVel * (X[0] - jointVelLim[1]);    
+    Constraints[1] = exp(lambdaLimVel * maxJointVel) + exp(lambdaLimVel * minJointVel);
 
-    double d0 = lambdaLim*lambdaLim * (exp(lambdaLim * maxJoint) - exp(lambdaLim * minJoint));
-    double d1 = lambdaLim*lambdaLim * (exp(lambdaLim * maxJointVel) - exp(lambdaLim * minJointVel));
+    double d0 = lambdaLimPos*lambdaLimPos * (exp(lambdaLimPos * maxJoint) - exp(lambdaLimPos * minJoint));
+    double d1 = lambdaLimVel*lambdaLimVel * (exp(lambdaLimVel * maxJointVel) - exp(lambdaLimVel * minJointVel));
     dConstraints << d0, 0.0, 
                     0.0, d1; 
 
-    double dd0 = pow(lambdaLim, 4.0) * Constraints[0];
-    double dd1 = pow(lambdaLim, 4.0) * Constraints[1];
+    double dd0 = pow(lambdaLimPos, 4.0) * Constraints[0];
+    double dd1 = pow(lambdaLimVel, 4.0) * Constraints[1];
     ddConstraints << dd0, 0.0, 
                      0.0, dd1;               
 }
@@ -104,15 +105,15 @@ void CostFunctionPyreneActuator::computeCostAndDeriv(const stateVec_t& X,const s
     running_cost =  ((X - Xdes).transpose() * Q * (X - Xdes) + U.transpose() * R * U + Constraints.transpose() * W * Constraints \
                     + TauConstraints.transpose() * P * TauConstraints)(0, 0);    
 
-    lx = Q*(X-Xdes) + (2.0*dConstraints.transpose()*W*Constraints);
+    lx = 2*Q*(X-Xdes) + (2.0*dConstraints.transpose()*W*Constraints);
     Eigen::Matrix<double, 2, 1> tempDD;
     tempDD = ddConstraints*W*Constraints; 
     Eigen::Matrix<double, 2, 2> dd;
     dd << tempDD[0], 0.0,
           0.0, tempDD[1];
-    lxx = Q + (2.0*(dConstraints.transpose()*W*dConstraints + dd));
-    lu = R*U + (2.0*dTauConstraints.transpose()*P*TauConstraints);
-    luu = R + (2.0*(ddTauConstraints.transpose()*P*TauConstraints + dTauConstraints.transpose()*P*dTauConstraints));
+    lxx = 2*Q + (2.0*(dConstraints.transpose()*W*dConstraints + dd));
+    lu = 2*R*U + (2.0*dTauConstraints.transpose()*P*TauConstraints);
+    luu = 2*R + (2.0*(ddTauConstraints.transpose()*P*TauConstraints + dTauConstraints.transpose()*P*dTauConstraints));
 }
 
 void CostFunctionPyreneActuator::computeFinalCostAndDeriv(const stateVec_t& X,const stateVec_t& Xdes)

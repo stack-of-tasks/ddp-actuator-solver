@@ -37,8 +37,7 @@ PyreneActuator::PyreneActuator()
   l_x = c_x;
 
   fu << 0.0, K/J;
-  fx << 0.0, 1.0,
-        0.0, -F_v/J;
+  fx.setZero();
 
   fxx[0].setZero();
   fxx[1].setZero();
@@ -61,9 +60,6 @@ void PyreneActuator::setLoadParam(const double& mass, const double& coordX, cons
   L =  mass;
   l_y = coordY;
   l_x = coordX;
-  std::cout << " L : " << L << std::endl; 
-  std::cout << " l_y : " << l_y << std::endl; 
-  std::cout << " l_x : " << l_x << std::endl; 
 }
 
 void PyreneActuator::setLoadMass(const double& mass)
