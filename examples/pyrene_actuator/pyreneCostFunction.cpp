@@ -10,12 +10,12 @@ const double CostFunctionPyreneActuator::offset_m = 0.5572;
 
 CostFunctionPyreneActuator::CostFunctionPyreneActuator()
 {
-    Q << 10.0, 0.0,
+    Q << 500.0, 0.0,
          0.0, 0.01; 
     W << 1.0, 0.0,
          0.0, 0.01; 
     R << 0.0001;
-    P << 1.0;
+    P << 100.0;
 
     lxx = Q;
     luu = R;

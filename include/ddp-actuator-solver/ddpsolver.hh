@@ -8,6 +8,9 @@
 #include <Eigen/StdVector>
 #include <qpOASES.hpp>
 #include <qpOASES/QProblemB.hpp>
+#include <time.h>
+#include <sys/time.h>
+#include <iostream>
 
 #define ENABLE_QPBOX 1
 #define DISABLE_QPBOX 0
@@ -359,6 +362,15 @@ class DDPSolver
       if (lltofQuu.info() == Eigen::NumericalIssue)
       {
         std::cout << "not sdp" << std::endl;
+        std::cout << "#############################" << std::endl;
+        std::cout << "Quu_reg : " << Quu_reg << std::endl;
+        std::cout << "lxx : " << costFunction->getlxx() << std::endl;
+        std::cout << "lu : " << costFunction->getlu() << std::endl;
+        std::cout << "lx : " << costFunction->getlx() << std::endl;
+        std::cout << "luu" << costFunction->getluu() << std::endl;
+        std::cout << "updateduList[0] : " << updateduList[0] << std::endl;
+        std::cout << "updatedxList[0] : " << updatedxList[0] << std::endl;
+        std::cout << "#############################" << std::endl;
         return false;
       }
       return true;

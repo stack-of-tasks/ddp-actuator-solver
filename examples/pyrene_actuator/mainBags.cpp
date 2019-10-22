@@ -15,14 +15,14 @@ using namespace Eigen;
 
 
 vector<double> fillVector(string repoBags, string fileName){
-    vector<double> fillVector(1000);
+    vector<double> fillVector(2000);
     ifstream file((repoBags + fileName).c_str(),ios::in);
     if (!file){
         cerr << "File " << fileName.c_str() << " not Read"<< endl;
     }
     
     double val;
-    for (int j=0; j<1000; j++) {
+    for (int j=0; j<2000; j++) {
         string line;
         getline(file, line);
         stringstream ss(line);
@@ -61,24 +61,26 @@ int main (int argc, char *argv[])
     costFunction.setTauLimit(70);
     costFunction.setJointLimit(0.0, -2.35619449019);
     costFunction.setJointVelLimit(30.0, -30.0);
-    CostFunction<double,2,1>::stateMat_t Q;
-    Q << 100.0,0.0,0.0,0.01;
-    costFunction.setCostGainState(Q);
-    // PyreneActuator.setLoadMass(20.0);
+    // CostFunction<double,2,1>::stateMat_t Q;
+    // Q << 500.0,0.0,0.0,0.01;    
+    // CostFunction<double,2,1>::commandMat_t P;
+    // P << 100.0;
+    // costFunction.setCostGainState(Q);
+    // costFunction.setCostGainTorqueConstraint(P);
+    // PyreneActuator.setLoadParam(30.0,-0.021481595, 0.10);
     DDPSolver<double,2,1> testSolverActuator(PyreneActuator,costFunction,DISABLE_FULLDDP,DISABLE_QPBOX); 
 
     double dx_joint;
     dx_joint = 0.5422;
     xinit << vec_joint_pos[0],
              dx_joint;
-    
-    unsigned int nbIterTestMax=1000.0;
+    xDes << vec_joint_pos[1], 0.0; 
+    unsigned int nbIterTestMax=2000.0;
     unsigned int iter;    
     testSolverActuator.FirstInitSolver(xinit,xDes,T,dt,iterMax,stopCrit);
 
     for (int i=0; i<nbIterTestMax-1; i++) {
 
-        xDes << vec_joint_pos[i+1], 0.0; 
         gettimeofday(&tbegin,NULL);
         
         testSolverActuator.initSolver(xinit,xDes);
@@ -91,6 +93,7 @@ int main (int argc, char *argv[])
 
         xinit << xList[1](0,0),
                  xList[1](1,0);
+        xDes << vec_joint_pos[i+1], 0.0; 
 
 
         texec+=((double)(tend.tv_sec-tbegin.tv_sec)*1000.0+((tend.tv_usec-tbegin.tv_usec)/1000.0));
