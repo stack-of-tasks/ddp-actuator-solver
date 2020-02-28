@@ -1,30 +1,30 @@
 #include <math.h>
 #include <cmath>  
 #include <iostream>
-#include "PyreneActuator.hh"
+#include "pyreneActuator.hh"
 #define pi M_PI
 
-const double PyreneActuator::K = 10.6; 
-const double PyreneActuator::J_j = 0.5878;
-const double PyreneActuator::F_vj = 0.4757;
-const double PyreneActuator::F_sj = 0.5403;
-const double PyreneActuator::offset_j = -0.3012;
-const double PyreneActuator::J_m = 0.21;
-const double PyreneActuator::F_vm = 5.6714;
-const double PyreneActuator::F_sm = 4.0420;
-const double PyreneActuator::offset_m = 0.5572;
-const double PyreneActuator::M = 4.5667;
-const double PyreneActuator::c_y = 1.1005/M;
-const double PyreneActuator::c_x = -0.0981/M; 
-const double PyreneActuator::mu = 1000.0;
-const double PyreneActuator::g = 9.81;
+const double pyreneActuator::K = 10.6; 
+const double pyreneActuator::J_j = 0.5878;
+const double pyreneActuator::F_vj = 0.4757;
+const double pyreneActuator::F_sj = 0.5403;
+const double pyreneActuator::offset_j = -0.3012;
+const double pyreneActuator::J_m = 0.21;
+const double pyreneActuator::F_vm = 5.6714;
+const double pyreneActuator::F_sm = 4.0420;
+const double pyreneActuator::offset_m = 0.5572;
+const double pyreneActuator::M = 4.5667;
+const double pyreneActuator::c_y = 1.1005/M;
+const double pyreneActuator::c_x = -0.0981/M; 
+const double pyreneActuator::mu = 1000.0;
+const double pyreneActuator::g = 9.81;
 
 /*
  * x0 -> actuator position
  * x1 -> actuator speed
  */
 
-PyreneActuator::PyreneActuator()
+pyreneActuator::pyreneActuator()
 {
   stateNb=2;
   commandNb=1;
@@ -55,25 +55,25 @@ PyreneActuator::PyreneActuator()
   upperCommandBounds << 1.0;
 }
 
-void PyreneActuator::setLoadParam(const double& mass, const double& coordX, const double& coordY)
+void pyreneActuator::setLoadParam(const double& mass, const double& coordX, const double& coordY)
 {
   L =  mass;
   l_y = coordY;
   l_x = coordX;
 }
 
-void PyreneActuator::setLoadMass(const double& mass)
+void pyreneActuator::setLoadMass(const double& mass)
 {
   L = mass;
   std::cout << " L : " << L << std::endl; 
 }
 
-void PyreneActuator::removeLoad()
+void pyreneActuator::removeLoad()
 {
   L = 0.0;
 }
 
-PyreneActuator::stateVec_t PyreneActuator::computeStateDeriv(double&, const stateVec_t& X,
+pyreneActuator::stateVec_t pyreneActuator::computeStateDeriv(double&, const stateVec_t& X,
     const commandVec_t &U)
 {
   stateVec_t dX;
@@ -84,7 +84,7 @@ PyreneActuator::stateVec_t PyreneActuator::computeStateDeriv(double&, const stat
   return dX;
 }
 
-PyreneActuator::stateVec_t PyreneActuator::computeNextState(double& dt, const stateVec_t& X,
+pyreneActuator::stateVec_t pyreneActuator::computeNextState(double& dt, const stateVec_t& X,
     const commandVec_t& U)
 {
   stateVec_t x_next,k1,k2,k3,k4;
@@ -97,7 +97,7 @@ PyreneActuator::stateVec_t PyreneActuator::computeNextState(double& dt, const st
 }
 
 
-void PyreneActuator::computeModelDeriv(double& dt, const stateVec_t& X,const commandVec_t& U)
+void pyreneActuator::computeModelDeriv(double& dt, const stateVec_t& X,const commandVec_t& U)
 {
   double dh = 1e-7;
   stateVec_t Xp, Xm;
@@ -113,17 +113,17 @@ void PyreneActuator::computeModelDeriv(double& dt, const stateVec_t& X,const com
   }
 }
 
-PyreneActuator::stateMat_t PyreneActuator::computeTensorContxx(const stateVec_t& )
+pyreneActuator::stateMat_t pyreneActuator::computeTensorContxx(const stateVec_t& )
 {
   return QxxCont;
 }
 
-PyreneActuator::commandMat_t PyreneActuator::computeTensorContuu(const stateVec_t& )
+pyreneActuator::commandMat_t pyreneActuator::computeTensorContuu(const stateVec_t& )
 {
   return QuuCont;
 }
 
-PyreneActuator::commandR_stateC_t PyreneActuator::computeTensorContux(const stateVec_t& )
+pyreneActuator::commandR_stateC_t pyreneActuator::computeTensorContux(const stateVec_t& )
 {
   return QuxCont;
 }

@@ -3,10 +3,10 @@
 
 #include <ddp-actuator-solver/dynamicmodel.hh>
 
-class PyreneActuator : public DynamicModel<double,2,1>
+class pyreneActuator : public DynamicModel<double,2,1>
 {
 public:
-    PyreneActuator();
+    pyreneActuator();
     void setLoadParam(const double& mass, const double& coordX, const double& coordY);
     void setLoadMass(const double& mass);
     void removeLoad();

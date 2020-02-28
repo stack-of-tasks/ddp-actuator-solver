@@ -11,7 +11,7 @@ endmacro()
 
 SET(source_files
   pyrene_actuator/pyreneCostFunction.cpp
-  pyrene_actuator/PyreneActuator.cpp
+  pyrene_actuator/pyreneActuator.cpp
   romeo_actuator/costfunctionromeoactuator.cpp
   romeo_actuator/romeosimpleactuator.cpp
   romeo_actuator/romeotorqueactuator.cpp
@@ -25,7 +25,7 @@ SET(source_files
 
 SET(header_files
   pyrene_actuator/pyreneCostFunction.hh
-  pyrene_actuator/PyreneActuator.hh
+  pyrene_actuator/pyreneActuator.hh
   romeo_actuator/costfunctionromeoactuator.hh
   romeo_actuator/romeosimpleactuator.hh
   romeo_actuator/romeotorqueactuator.hh

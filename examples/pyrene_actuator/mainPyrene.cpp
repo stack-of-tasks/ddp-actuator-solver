@@ -2,7 +2,7 @@
 #include <fstream>
 
 #include <ddp-actuator-solver/ddpsolver.hh>
-#include "PyreneActuator.hh"
+#include "pyreneActuator.hh"
 #include "pyreneCostFunction.hh"
 
 #include <time.h>
@@ -30,12 +30,12 @@ int main()
     DDPSolver<double,2,1>::commandVecTab_t uList;
     DDPSolver<double,2,1>::traj lastTraj;
 
-    PyreneActuator PyreneActuator;
+    pyreneActuator pyreneActuator;
     CostFunctionPyreneActuator costFunction;
     costFunction.setTauLimit(70);   
     costFunction.setJointLimit(0.0, -2.35619449019);
     costFunction.setJointVelLimit(30.0, -30.0);
-    DDPSolver<double,2,1> testSolverActuator(PyreneActuator,costFunction,DISABLE_FULLDDP,DISABLE_QPBOX);
+    DDPSolver<double,2,1> testSolverActuator(pyreneActuator,costFunction,DISABLE_FULLDDP,DISABLE_QPBOX);
     testSolverActuator.FirstInitSolver(xinit,xDes,T,dt,iterMax,stopCrit);
 
     int N = 100;
