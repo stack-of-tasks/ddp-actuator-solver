@@ -1,1 +1,1 @@
-_local_test_ddp(  mainLinear )
+_local_test_ddp(mainLinear)

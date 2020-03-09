@@ -1,3 +1,1 @@
-_local_test_ddp(mainPyrene
-				mainBags
-		)
+_local_test_ddp(mainPyrene mainBags)

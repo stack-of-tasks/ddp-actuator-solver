@@ -1,15 +1,12 @@
-
 macro(_local_test_ddp)
   set(list_var "${ARGN}")
-  foreach(loop_var IN LISTS list_var)
-    ADD_EXECUTABLE(${loop_var} ${loop_var}.cpp)
-    TARGET_LINK_LIBRARIES(${loop_var} ${PROJECT_NAME}-examples 
-      ${qpOASES_LIBRARIES})
-    PKG_CONFIG_USE_DEPENDENCY(${loop_var} eigen3)
+  foreach(ex IN LISTS list_var)
+    ADD_EXECUTABLE(${ex} ${ex}.cpp)
+    TARGET_LINK_LIBRARIES(${ex} ${PROJECT_NAME}-examples ${qpOASES_LIBRARIES})
   endforeach()
 endmacro()
 
-SET(source_files
+SET(${PROJECT_NAME}_EXAMPLE_SOURCES
   pyrene_actuator/pyreneCostFunction.cpp
   pyrene_actuator/pyreneActuator.cpp
   romeo_actuator/costfunctionromeoactuator.cpp
@@ -21,9 +18,9 @@ SET(source_files
   linear/modelLinear.cpp
   inverse_pendulum/costIP.cpp
   inverse_pendulum/modelIP.cpp
-)
+  )
 
-SET(header_files
+SET(${PROJECT_NAME}_EXAMPLE_HEADERS
   pyrene_actuator/pyreneCostFunction.hh
   pyrene_actuator/pyreneActuator.hh
   romeo_actuator/costfunctionromeoactuator.hh
@@ -33,17 +30,13 @@ SET(header_files
   temperature_control/dctemp.hh
   )
 
-ADD_LIBRARY(${PROJECT_NAME}-examples SHARED ${source_files})
-SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/find-external/qpOASES")
-FIND_PACKAGE("qpOASES" REQUIRED)
-INCLUDE_DIRECTORIES(SYSTEM ${qpOASES_INCLUDE_DIRS})
-
+ADD_LIBRARY(${PROJECT_NAME}-examples SHARED
+  ${${PROJECT_NAME}_EXAMPLE_SOURCES} ${${PROJECT_NAME}_EXAMPLE_HEADERS})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}-examples ${qpOASES_LIBRARIES})
-PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME}-examples qpOASES)    
-PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME}-examples eigen3)
+TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME}-examples SYSTEM PUBLIC
+  ${EIGEN3_INCLUDE_DIRS} ${qpOASES_INCLUDE_DIRS})
 
-INSTALL(TARGETS ${PROJECT_NAME}-examples LIBRARY DESTINATION lib)
-INSTALL(FILES ${header_files} DESTINATION include/ddp-actuator-solver/examples)
+INSTALL(TARGETS ${PROJECT_NAME}-examples EXPORT ${TARGETS_EXPORT_NAME} DESTINATION lib)
 
 ADD_SUBDIRECTORY(pyrene_actuator)
 ADD_SUBDIRECTORY(romeo_actuator)

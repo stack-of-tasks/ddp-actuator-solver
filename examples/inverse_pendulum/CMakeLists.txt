@@ -1,1 +1,1 @@
-_local_test_ddp(  mainIP )
+_local_test_ddp(mainIP)
