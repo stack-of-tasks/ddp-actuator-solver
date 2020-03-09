@@ -30,9 +30,16 @@ FIND_PACKAGE("qpOASES" REQUIRED)
 
 # Set the headers to be installed
 SET(${PROJECT_NAME}_HEADERS
-  include/ddp-actuator-solver/costfunction.hh
-  include/ddp-actuator-solver/dynamicmodel.hh
-  include/ddp-actuator-solver/ddpsolver.hh
+  include/${CUSTOM_HEADER_DIR}/costfunction.hh
+  include/${CUSTOM_HEADER_DIR}/dynamicmodel.hh
+  include/${CUSTOM_HEADER_DIR}/ddpsolver.hh
+  include/${CUSTOM_HEADER_DIR}/pyrene_actuator/pyreneCostFunction.hh
+  include/${CUSTOM_HEADER_DIR}/pyrene_actuator/pyreneActuator.hh
+  include/${CUSTOM_HEADER_DIR}/romeo_actuator/costfunctionromeoactuator.hh
+  include/${CUSTOM_HEADER_DIR}/romeo_actuator/romeosimpleactuator.hh
+  include/${CUSTOM_HEADER_DIR}/romeo_actuator/romeotorqueactuator.hh
+  include/${CUSTOM_HEADER_DIR}/temperature_control/costtemp.hh
+  include/${CUSTOM_HEADER_DIR}/temperature_control/dctemp.hh
   )
 
 SET(${PROJECT_NAME}_SOURCES
@@ -64,6 +71,5 @@ INSTALL(TARGETS ${PROJECT_NAME} EXPORT ${TARGETS_EXPORT_NAME} DESTINATION lib)
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(tests)
-ADD_SUBDIRECTORY(examples)
 
 PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})

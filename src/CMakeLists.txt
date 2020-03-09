@@ -1,1 +1,13 @@
+macro(_local_test_ddp)
+  set(list_var "${ARGN}")
+  foreach(ex IN LISTS list_var)
+    ADD_EXECUTABLE(${ex} ${ex}.cpp)
+    TARGET_LINK_LIBRARIES(${ex} ${PROJECT_NAME} ${qpOASES_LIBRARIES})
+  endforeach()
+endmacro()
 
+ADD_SUBDIRECTORY(pyrene_actuator)
+ADD_SUBDIRECTORY(romeo_actuator)
+ADD_SUBDIRECTORY(temperature_control)
+ADD_SUBDIRECTORY(linear)
+ADD_SUBDIRECTORY(inverse_pendulum)
