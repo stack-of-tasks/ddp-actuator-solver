@@ -1,0 +1,17 @@
+<package format="2">
+  <name>ddp-actuator-solver</name>
+  <version>1.1.0</version>
+  <description>
+    Dynamic Differential Programming
+  </description>
+  <maintainer email="ostasse@laas.fr">Olivier Stasse</maintainer>
+  <license>BSD</license>
+
+  <url>https://github.com/stack-of-tasks/ddp-actuator-solver</url>
+  <author>Olivier Stasse</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <doc_depend>doxygen</doc_depend>
+
+</package>
