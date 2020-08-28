@@ -28,7 +28,6 @@ int main() {
   xinit << -1.0, 0.0, -100.0, 0.0, 0.0;
   xDes << 0.5, 0.0, 0.0, 0.0, 0.0;
 
-  unsigned int i;
   unsigned int T = 3000;
   double dt = 1e-3;
   unsigned int iterMax = 100;

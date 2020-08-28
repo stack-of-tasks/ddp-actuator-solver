@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
   unsigned int iter;
   testSolverActuator.FirstInitSolver(xinit, xDes, T, dt, iterMax, stopCrit);
 
-  for (int i = 0; i < nbIterTestMax - 1; i++) {
+  for (unsigned int i = 0; i < nbIterTestMax - 1; i++) {
     gettimeofday(&tbegin, NULL);
 
     testSolverActuator.initSolver(xinit, xDes);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
     xinit << xList[1](0, 0), xList[1](1, 0);
     xDes << vec_joint_pos[i + 1], 0.0;
 
-    texec += ((double)(tend.tv_sec - tbegin.tv_sec) * 1000.0 + ((tend.tv_usec - tbegin.tv_usec) / 1000.0));
+    texec += ((double)(tend.tv_sec - tbegin.tv_sec) * 1000.0 + ((double)(tend.tv_usec - tbegin.tv_usec) / 1000.0));
     cout << "texec:" << texec << std::endl;
 
     string ResultNumber;
@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
     ofstream file(("results_sinu/results_sinu" + ResultNumber + ".csv").c_str(), ios::out | ios::trunc);
     if (file) {
       file << "q,qdes,qDot,qDotDes,u" << endl;
-      for (int i = 0; i < T; i++) {
+      for (unsigned int i = 0; i < T; i++) {
         file << xList[i](0, 0) << "," << xDes[0] << "," << xList[i](1, 0) << "," << xDes[1] << ","
              << uList[i - 1](0, 0) << endl;
       }

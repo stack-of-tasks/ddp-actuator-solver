@@ -59,7 +59,7 @@ int main() {
   ofstream fichier("results_simple.csv", ios::out | ios::trunc);
   if (fichier) {
     fichier << "q,qDot,u" << endl;
-    for (int i = 0; i < T; i++) {
+    for (unsigned int i = 0; i < T; i++) {
       fichier << xList[i](0, 0) << "," << xList[i](1, 0) << "," << uList[i](0, 0) << endl;
     }
     fichier << xList[T](0, 0) << "," << xList[T](1, 0) << "," << uList[T - 1](0, 0) << endl;

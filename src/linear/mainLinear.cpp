@@ -23,7 +23,6 @@ int main() {
   xinit << 0.0, 0.0;
   xDes << 1.0, 0.0;
 
-  unsigned int i;
   unsigned int T = 300;
   double dt = 1e-2;
   unsigned int iterMax = 20;
@@ -33,7 +32,6 @@ int main() {
   DDPSolver<double, STATE_NB, COMMAND_NB>::traj lastTraj;
 
   ModelLinear model(dt);
-  ModelLinear* noisyModel = NULL;
   CostLinear cost;
   DDPSolver<double, STATE_NB, COMMAND_NB> solver(model, cost, DISABLE_FULLDDP, DISABLE_QPBOX);
   solver.FirstInitSolver(xinit, xDes, T, dt, iterMax, stopCrit);
