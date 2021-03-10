@@ -1,7 +1,5 @@
-from matplotlib.pyplot import *
-import numpy as np
 import csv
-
+from matplotlib import pyplot as plt
 ''' position '''
 path1 = '../_build/examples/temperature_control/results1.csv'
 path2 = '../_build/examples/temperature_control/results2.csv'
@@ -9,21 +7,21 @@ path2 = '../_build/examples/temperature_control/results2.csv'
 names = []
 data = []
 
-with open(path1,'r') as dataFile1:
+with open(path1, 'r') as dataFile1:
     reader = csv.reader(dataFile1)
     i = 0
     for row in reader:
-        if i ==2:
+        if i == 2:
             for j in range(len(names)):
                 data[j].append(float(row[j]))
-        if i==1:
+        if i == 1:
             T = int(row[0])
             S_NB = int(row[1])
             C_NB = int(row[2])
             for j in range(len(names)):
                 data.append([])
             i = 2
-        if i==0:
+        if i == 0:
             for name in row:
                 names.append(name)
             i = 1
@@ -59,20 +57,18 @@ with open(path1,'r') as dataFile1:
         if i==0:
             i = 1'''
 
-fig1 = figure()
+fig1 = plt.figure()
 for i in range(S_NB):
-    subplot(int(S_NB/2)+1,2,int(i+1))
-    plot(data[i])
-    title(names[i])
-    grid()
+    plt.subplot(int(S_NB / 2) + 1, 2, int(i + 1))
+    plt.plot(data[i])
+    plt.title(names[i])
+    plt.grid()
 
-
-fig2 = figure()
+fig2 = plt.figure()
 for i in range(C_NB):
-    subplot(int(C_NB/2)+1,2,int(i+1))
-    plot(data[i+S_NB])
-    title(names[i+S_NB])
-    grid()
+    plt.subplot(int(C_NB / 2) + 1, 2, int(i + 1))
+    plt.plot(data[i + S_NB])
+    plt.title(names[i + S_NB])
+    plt.grid()
 
-
-show()
+plt.show()

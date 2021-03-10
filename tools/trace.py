@@ -1,27 +1,25 @@
 import matplotlib.pyplot as pl
 import csv
 
-
 tauList = []
 tauDotList = []
 qList = []
 qDotList = []
 uList = []
-
 ''' position '''
 path = '../_build/cpp/results.csv'
 
-with open(path,'r') as dataFile:
+with open(path, 'r') as dataFile:
     reader = csv.reader(dataFile)
     i = 0
     for row in reader:
-        if i ==1:
+        if i == 1:
             tauList.append(float(row[0]))
             tauDotList.append(float(row[1]))
             qList.append(float(row[2]))
             qDotList.append(float(row[3]))
             uList.append((float(row[4])))
-        if i==0:
+        if i == 0:
             i = 1
 
 fig1 = pl.figure()
@@ -48,4 +46,3 @@ ax2.plot(uList)
 ax2.grid()
 
 pl.show()
-

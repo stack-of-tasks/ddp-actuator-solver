@@ -6,21 +6,20 @@ tauDotList = []
 qList = []
 qDotList = []
 uList = []
-
 ''' position '''
 path = '../_build/cpp/resultsBench.csv'
 
-with open(path,'r') as dataFile:
+with open(path, 'r') as dataFile:
     reader = csv.reader(dataFile)
     i = 0
     for row in reader:
-        if i ==1:
+        if i == 1:
             tauList.append(float(row[0]))
             tauDotList.append(float(row[1]))
             qList.append(float(row[2]))
             qDotList.append(float(row[3]))
             uList.append((float(row[4])))
-        if i==0:
+        if i == 0:
             i = 1
 
 fig1 = pl.figure()
@@ -50,24 +49,23 @@ pl.show()
 
 pl.ion()
 
-
 while 1:
     tauList = []
     tauDotList = []
     qList = []
     qDotList = []
     uList = []
-    with open(path,'r') as dataFile:
+    with open(path, 'r') as dataFile:
         reader = csv.reader(dataFile)
         i = 0
         for row in reader:
-            if i ==1:
+            if i == 1:
                 tauList.append(float(row[0]))
                 tauDotList.append(float(row[1]))
                 qList.append(float(row[2]))
                 qDotList.append(float(row[3]))
                 uList.append((float(row[4])))
-            if i==0:
+            if i == 0:
                 i = 1
 
     ax1.plot(tauList)
@@ -86,4 +84,3 @@ while 1:
     ax2.grid()
 
     pl.draw()
-
