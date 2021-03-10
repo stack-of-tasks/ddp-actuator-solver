@@ -1,3 +1,8 @@
+# DDP actuator solver
+
+[![Pipeline status](https://gitlab.laas.fr/stack-of-tasks/ddp-actuator-solver/badges/master/pipeline.svg)](https://gitlab.laas.fr/stack-of-tasks/ddp-actuator-solver/commits/master)
+[![Coverage report](https://gitlab.laas.fr/stack-of-tasks/ddp-actuator-solver/badges/master/coverage.svg?job=doc-coverage)](http://projects.laas.fr/gepetto/doc/stack-of-tasks/ddp-actuator-solver/master/coverage/)
+
 iLQRSolver.py is a library used to compute a sequence of control to
 reach a specified point with a specified system and cost function.
 
