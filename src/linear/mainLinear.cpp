@@ -1,12 +1,12 @@
-#include <iostream>
-#include <fstream>
+#include <sys/time.h>
+#include <time.h>
 
 #include <ddp-actuator-solver/ddpsolver.hh>
-#include "ddp-actuator-solver/linear/modelLinear.hh"
-#include "ddp-actuator-solver/linear/costLinear.hh"
+#include <fstream>
+#include <iostream>
 
-#include <time.h>
-#include <sys/time.h>
+#include "ddp-actuator-solver/linear/costLinear.hh"
+#include "ddp-actuator-solver/linear/modelLinear.hh"
 
 using namespace std;
 using namespace Eigen;
@@ -33,7 +33,8 @@ int main() {
 
   ModelLinear model(dt);
   CostLinear cost;
-  DDPSolver<double, STATE_NB, COMMAND_NB> solver(model, cost, DISABLE_FULLDDP, DISABLE_QPBOX);
+  DDPSolver<double, STATE_NB, COMMAND_NB> solver(model, cost, DISABLE_FULLDDP,
+                                                 DISABLE_QPBOX);
   solver.FirstInitSolver(xinit, xDes, T, dt, iterMax, stopCrit);
 
   int N = 100;
@@ -46,7 +47,9 @@ int main() {
   uList = lastTraj.uList;
   unsigned int iter = lastTraj.iter;
 
-  texec = ((double)(1000 * (tend.tv_sec - tbegin.tv_sec) + ((tend.tv_usec - tbegin.tv_usec) / 1000))) / 1000.;
+  texec = ((double)(1000 * (tend.tv_sec - tbegin.tv_sec) +
+                    ((tend.tv_usec - tbegin.tv_usec) / 1000))) /
+          1000.;
   texec /= N;
 
   cout << endl;

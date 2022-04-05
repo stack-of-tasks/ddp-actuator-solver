@@ -1,8 +1,9 @@
+#include "ddp-actuator-solver/romeo_actuator/romeosimpleactuator.hh"
+
 #include <math.h>
-#include <eigen3/unsupported/Eigen/MatrixFunctions>
 #include <sys/time.h>
 
-#include "ddp-actuator-solver/romeo_actuator/romeosimpleactuator.hh"
+#include <eigen3/unsupported/Eigen/MatrixFunctions>
 
 /*
  * x0 -> actuator position
@@ -33,8 +34,10 @@ RomeoSimpleActuator::RomeoSimpleActuator(double& mydt, bool noiseOnParameters) {
     srand(static_cast<unsigned int>(tv.tv_usec));
     k = 588.0 + 0.0 * 588.0 * 0.1 * (2.0 * (rand() / (double)RAND_MAX) - 1.0);
     R = 96.1 + 96.1 * 0.1 * (2.0 * (rand() / (double)RAND_MAX) - 1.0);
-    Jm = 183 * 1e-7 + 183 * 1e-7 * 0.1 * (2.0 * (rand() / (double)RAND_MAX) - 1.0);
-    Jl = 0.000085 + 0.0 * 0.000085 * 0.1 * (2.0 * (rand() / (double)RAND_MAX) - 1.0);
+    Jm = 183 * 1e-7 +
+         183 * 1e-7 * 0.1 * (2.0 * (rand() / (double)RAND_MAX) - 1.0);
+    Jl = 0.000085 +
+         0.0 * 0.000085 * 0.1 * (2.0 * (rand() / (double)RAND_MAX) - 1.0);
     fvm = 5.65e-5 + 5.65e-5 * 0.1 * (2.0 * (rand() / (double)RAND_MAX) - 1.0);
     fvl = 0.278 + 0.0 * 0.278 * 0.1 * (2.0 * (rand() / (double)RAND_MAX) - 1.0);
     Kt = 0.0578 + 0.0578 * 0.1 * (2.0 * (rand() / (double)RAND_MAX) - 1.0);
@@ -45,8 +48,8 @@ RomeoSimpleActuator::RomeoSimpleActuator(double& mydt, bool noiseOnParameters) {
 
   Id.setIdentity();
 
-  A << 0.0, 1.0, 0.0, 0.0, -k / Jl, -fvl / Jl, k / (R * Jl), 0.0, 0.0, 0.0, 0.0, 1.0, k / (R * Jm), 0.0,
-      -k / (Jm * R * R), -fvm / Jm;
+  A << 0.0, 1.0, 0.0, 0.0, -k / Jl, -fvl / Jl, k / (R * Jl), 0.0, 0.0, 0.0, 0.0,
+      1.0, k / (R * Jm), 0.0, -k / (Jm * R * R), -fvm / Jm;
 
   Ad = (dt * A).exp();
 
@@ -76,8 +79,8 @@ RomeoSimpleActuator::RomeoSimpleActuator(double& mydt, bool noiseOnParameters) {
   upperCommandBounds << 1.0;
 }
 
-RomeoSimpleActuator::stateVec_t RomeoSimpleActuator::computeNextState(double&, const stateVec_t& X,
-                                                                      const commandVec_t& U) {
+RomeoSimpleActuator::stateVec_t RomeoSimpleActuator::computeNextState(
+    double&, const stateVec_t& X, const commandVec_t& U) {
   stateVec_t x_next;  //,k1,k2,k3,k4;
   /*k1 = A*X + B*U;
   k2 = A*(X+(dt/2)*k1) + B*U;
@@ -89,7 +92,8 @@ RomeoSimpleActuator::stateVec_t RomeoSimpleActuator::computeNextState(double&, c
   return x_next;
 }
 
-void RomeoSimpleActuator::computeModelDeriv(double& dt, const stateVec_t& X, const commandVec_t& U) {
+void RomeoSimpleActuator::computeModelDeriv(double& dt, const stateVec_t& X,
+                                            const commandVec_t& U) {
   double dh = 1e-7;
   stateVec_t Xp, Xm;
   Xp = X;
@@ -97,14 +101,24 @@ void RomeoSimpleActuator::computeModelDeriv(double& dt, const stateVec_t& X, con
   for (int i = 0; i < 4; i++) {
     Xp[i] += dh / 2;
     Xm[i] -= dh / 2;
-    fx.col(i) = (computeNextState(dt, Xp, U) - computeNextState(dt, Xm, U)) / dh;
+    fx.col(i) =
+        (computeNextState(dt, Xp, U) - computeNextState(dt, Xm, U)) / dh;
     Xp = X;
     Xm = X;
   }
 }
 
-RomeoSimpleActuator::stateMat_t RomeoSimpleActuator::computeTensorContxx(const stateVec_t&) { return QxxCont; }
+RomeoSimpleActuator::stateMat_t RomeoSimpleActuator::computeTensorContxx(
+    const stateVec_t&) {
+  return QxxCont;
+}
 
-RomeoSimpleActuator::commandMat_t RomeoSimpleActuator::computeTensorContuu(const stateVec_t&) { return QuuCont; }
+RomeoSimpleActuator::commandMat_t RomeoSimpleActuator::computeTensorContuu(
+    const stateVec_t&) {
+  return QuuCont;
+}
 
-RomeoSimpleActuator::commandR_stateC_t RomeoSimpleActuator::computeTensorContux(const stateVec_t&) { return QuxCont; }
+RomeoSimpleActuator::commandR_stateC_t RomeoSimpleActuator::computeTensorContux(
+    const stateVec_t&) {
+  return QuxCont;
+}

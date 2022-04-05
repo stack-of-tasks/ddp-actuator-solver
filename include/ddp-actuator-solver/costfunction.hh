@@ -6,33 +6,47 @@
 template <typename precision, int stateSize, int commandSize>
 class CostFunction {
  public:
-  typedef Eigen::Matrix<precision, stateSize, 1> stateVec_t;                      // 1 x stateSize
-  typedef Eigen::Matrix<precision, 1, stateSize> stateVecTrans_t;                 // 1 x stateSize
-  typedef Eigen::Matrix<precision, stateSize, stateSize> stateMat_t;              // stateSize x stateSize
-  typedef Eigen::Matrix<precision, stateSize, stateSize> stateTens_t[stateSize];  // stateSize x stateSize x stateSize
+  typedef Eigen::Matrix<precision, stateSize, 1> stateVec_t;  // 1 x stateSize
+  typedef Eigen::Matrix<precision, 1, stateSize>
+      stateVecTrans_t;  // 1 x stateSize
+  typedef Eigen::Matrix<precision, stateSize, stateSize>
+      stateMat_t;  // stateSize x stateSize
+  typedef Eigen::Matrix<precision, stateSize, stateSize>
+      stateTens_t[stateSize];  // stateSize x stateSize x stateSize
 
   // typedef for commandSize types
-  typedef Eigen::Matrix<precision, commandSize, 1> commandVec_t;            // commandSize x 1
-  typedef Eigen::Matrix<precision, 1, commandSize> commandVecTrans_t;       // 1 x commandSize
-  typedef Eigen::Matrix<precision, commandSize, commandSize> commandMat_t;  // commandSize x commandSize
+  typedef Eigen::Matrix<precision, commandSize, 1>
+      commandVec_t;  // commandSize x 1
+  typedef Eigen::Matrix<precision, 1, commandSize>
+      commandVecTrans_t;  // 1 x commandSize
+  typedef Eigen::Matrix<precision, commandSize, commandSize>
+      commandMat_t;  // commandSize x commandSize
   typedef Eigen::Matrix<precision, commandSize, commandSize>
       commandTens_t[commandSize];  // stateSize x commandSize x commandSize
 
   // typedef for mixed stateSize and commandSize types
-  typedef Eigen::Matrix<precision, stateSize, commandSize> stateR_commandC_t;  // stateSize x commandSize
   typedef Eigen::Matrix<precision, stateSize, commandSize>
-      stateR_commandC_stateD_t[stateSize];  // stateSize x commandSize x stateSize
+      stateR_commandC_t;  // stateSize x commandSize
   typedef Eigen::Matrix<precision, stateSize, commandSize>
-      stateR_commandC_commandD_t[commandSize];                                 // stateSize x commandSize x commandSize
-  typedef Eigen::Matrix<precision, commandSize, stateSize> commandR_stateC_t;  // commandSize x stateSize
+      stateR_commandC_stateD_t[stateSize];  // stateSize x commandSize x
+                                            // stateSize
+  typedef Eigen::Matrix<precision, stateSize, commandSize>
+      stateR_commandC_commandD_t[commandSize];  // stateSize x commandSize x
+                                                // commandSize
   typedef Eigen::Matrix<precision, commandSize, stateSize>
-      commandR_stateC_stateD_t[stateSize];  // commandSize x stateSize x stateSize
+      commandR_stateC_t;  // commandSize x stateSize
   typedef Eigen::Matrix<precision, commandSize, stateSize>
-      commandR_stateC_commandD_t[commandSize];  // commandSize x stateSize x commandSize
+      commandR_stateC_stateD_t[stateSize];  // commandSize x stateSize x
+                                            // stateSize
+  typedef Eigen::Matrix<precision, commandSize, stateSize>
+      commandR_stateC_commandD_t[commandSize];  // commandSize x stateSize x
+                                                // commandSize
   typedef Eigen::Matrix<precision, stateSize, stateSize>
-      stateR_stateC_commandD_t[commandSize];  // stateSize x stateSize x commandSize
+      stateR_stateC_commandD_t[commandSize];  // stateSize x stateSize x
+                                              // commandSize
   typedef Eigen::Matrix<precision, commandSize, commandSize>
-      commandR_commandC_stateD_t[stateSize];  // commandSize x commandSize x stateSize
+      commandR_commandC_stateD_t[stateSize];  // commandSize x commandSize x
+                                              // stateSize
 
  public:
  private:
@@ -52,8 +66,10 @@ class CostFunction {
   stateR_commandC_t lxu;
   // methods //
  public:
-  virtual void computeCostAndDeriv(const stateVec_t& X, const stateVec_t& Xdes, const commandVec_t& U) = 0;
-  virtual void computeFinalCostAndDeriv(const stateVec_t& X, const stateVec_t& Xdes) = 0;
+  virtual void computeCostAndDeriv(const stateVec_t& X, const stateVec_t& Xdes,
+                                   const commandVec_t& U) = 0;
+  virtual void computeFinalCostAndDeriv(const stateVec_t& X,
+                                        const stateVec_t& Xdes) = 0;
 
  private:
  protected:

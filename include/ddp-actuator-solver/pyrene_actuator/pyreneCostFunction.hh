@@ -8,7 +8,8 @@ class CostFunctionPyreneActuator : public CostFunction<double, 2, 1> {
  public:
   CostFunctionPyreneActuator();
 
-  void computeCostAndDeriv(const stateVec_t& X, const stateVec_t& Xdes, const commandVec_t& U);
+  void computeCostAndDeriv(const stateVec_t& X, const stateVec_t& Xdes,
+                           const commandVec_t& U);
   void computeFinalCostAndDeriv(const stateVec_t& X, const stateVec_t& Xdes);
 
   void setCostGainState(const stateMat_t& Q);

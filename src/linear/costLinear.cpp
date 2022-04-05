@@ -13,13 +13,17 @@ CostLinear::CostLinear() {
   running_cost = 0;
 }
 
-void CostLinear::computeCostAndDeriv(const stateVec_t& X, const stateVec_t& Xdes, const commandVec_t& U) {
-  running_cost = ((X - Xdes).transpose() * Q * (X - Xdes) + U.transpose() * R * U)(0, 0);
+void CostLinear::computeCostAndDeriv(const stateVec_t& X,
+                                     const stateVec_t& Xdes,
+                                     const commandVec_t& U) {
+  running_cost =
+      ((X - Xdes).transpose() * Q * (X - Xdes) + U.transpose() * R * U)(0, 0);
   lx = Q * (X - Xdes);
   lu = R * U;
 }
 
-void CostLinear::computeFinalCostAndDeriv(const stateVec_t& X, const stateVec_t& Xdes) {
+void CostLinear::computeFinalCostAndDeriv(const stateVec_t& X,
+                                          const stateVec_t& Xdes) {
   final_cost = ((X - Xdes).transpose() * 1.0 * Q * (X - Xdes))(0, 0);
   lx = 1.0 * Q * (X - Xdes);
   lxx = 1.0 * Q;

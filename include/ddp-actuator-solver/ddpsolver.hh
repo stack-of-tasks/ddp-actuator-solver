@@ -1,16 +1,17 @@
 #ifndef DDPSOLVER_H
 #define DDPSOLVER_H
 
-#include "dynamicmodel.hh"
-#include "costfunction.hh"
+#include <sys/time.h>
+#include <time.h>
 
 #include <Eigen/Dense>
 #include <Eigen/StdVector>
+#include <iostream>
 #include <qpOASES.hpp>
 #include <qpOASES/QProblemB.hpp>
-#include <time.h>
-#include <sys/time.h>
-#include <iostream>
+
+#include "costfunction.hh"
+#include "dynamicmodel.hh"
 
 #define ENABLE_QPBOX 1
 #define DISABLE_QPBOX 0
@@ -25,30 +26,43 @@ EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION(Eigen::VectorXd)
 template <typename precision, int stateSize, int commandSize>
 class DDPSolver {
  public:
-  typedef Eigen::Matrix<precision, stateSize, 1> stateVec_t;          // 1 x stateSize
-  typedef Eigen::Matrix<precision, 1, stateSize> stateVecTrans_t;     // 1 x stateSize
-  typedef Eigen::Matrix<precision, stateSize, stateSize> stateMat_t;  // stateSize x stateSize
+  typedef Eigen::Matrix<precision, stateSize, 1> stateVec_t;  // 1 x stateSize
+  typedef Eigen::Matrix<precision, 1, stateSize>
+      stateVecTrans_t;  // 1 x stateSize
+  typedef Eigen::Matrix<precision, stateSize, stateSize>
+      stateMat_t;  // stateSize x stateSize
 
   // typedef for commandSize types
-  typedef Eigen::Matrix<precision, commandSize, 1> commandVec_t;            // commandSize x 1
-  typedef Eigen::Matrix<precision, 1, commandSize> commandVecTrans_t;       // 1 x commandSize
-  typedef Eigen::Matrix<precision, commandSize, commandSize> commandMat_t;  // commandSize x commandSize
+  typedef Eigen::Matrix<precision, commandSize, 1>
+      commandVec_t;  // commandSize x 1
+  typedef Eigen::Matrix<precision, 1, commandSize>
+      commandVecTrans_t;  // 1 x commandSize
+  typedef Eigen::Matrix<precision, commandSize, commandSize>
+      commandMat_t;  // commandSize x commandSize
 
   // typedef for mixed stateSize and commandSize types
-  typedef Eigen::Matrix<precision, stateSize, commandSize> stateR_commandC_t;  // stateSize x commandSize
   typedef Eigen::Matrix<precision, stateSize, commandSize>
-      stateR_commandC_stateD_t[stateSize];  // stateSize x commandSize x stateSize
+      stateR_commandC_t;  // stateSize x commandSize
   typedef Eigen::Matrix<precision, stateSize, commandSize>
-      stateR_commandC_commandD_t[commandSize];                                 // stateSize x commandSize x commandSize
-  typedef Eigen::Matrix<precision, commandSize, stateSize> commandR_stateC_t;  // commandSize x stateSize
+      stateR_commandC_stateD_t[stateSize];  // stateSize x commandSize x
+                                            // stateSize
+  typedef Eigen::Matrix<precision, stateSize, commandSize>
+      stateR_commandC_commandD_t[commandSize];  // stateSize x commandSize x
+                                                // commandSize
   typedef Eigen::Matrix<precision, commandSize, stateSize>
-      commandR_stateC_stateD_t[stateSize];  // commandSize x stateSize x stateSize
+      commandR_stateC_t;  // commandSize x stateSize
   typedef Eigen::Matrix<precision, commandSize, stateSize>
-      commandR_stateC_commandD_t[commandSize];  // commandSize x stateSize x commandSize
+      commandR_stateC_stateD_t[stateSize];  // commandSize x stateSize x
+                                            // stateSize
+  typedef Eigen::Matrix<precision, commandSize, stateSize>
+      commandR_stateC_commandD_t[commandSize];  // commandSize x stateSize x
+                                                // commandSize
   typedef Eigen::Matrix<precision, stateSize, stateSize>
-      stateR_stateC_commandD_t[commandSize];  // stateSize x stateSize x commandSize
+      stateR_stateC_commandD_t[commandSize];  // stateSize x stateSize x
+                                              // commandSize
   typedef Eigen::Matrix<precision, commandSize, commandSize>
-      commandR_commandC_stateD_t[stateSize];  // commandSize x commandSize x stateSize
+      commandR_commandC_stateD_t[stateSize];  // commandSize x commandSize x
+                                              // stateSize
 
   typedef std::vector<stateVec_t> stateVecTab_t;
   typedef std::vector<commandVec_t> commandVecTab_t;
@@ -131,7 +145,8 @@ class DDPSolver {
  protected:
   // methods //
  public:
-  DDPSolver(DynamicModel_t& myDynamicModel, CostFunction_t& myCostFunction, bool fullDDP = 0, bool QPBox = 0) {
+  DDPSolver(DynamicModel_t& myDynamicModel, CostFunction_t& myCostFunction,
+            bool fullDDP = 0, bool QPBox = 0) {
     dynamicModel = &myDynamicModel;
     costFunction = &myCostFunction;
     stateNb = myDynamicModel.getStateNb();
@@ -157,8 +172,9 @@ class DDPSolver {
     }
   }
 
-  void FirstInitSolver(stateVec_t& myxInit, stateVec_t& myxDes, unsigned int& myT, double& mydt,
-                       unsigned int& myiterMax, double& mystopCrit) {
+  void FirstInitSolver(stateVec_t& myxInit, stateVec_t& myxDes,
+                       unsigned int& myT, double& mydt, unsigned int& myiterMax,
+                       double& mystopCrit) {
     xInit = myxInit;
     xDes = myxDes;
     T = myT;
@@ -238,13 +254,18 @@ class DDPSolver {
 
         Qx = costFunction->getlx() + dynamicModel->getfx().transpose() * nextVx;
         Qu = costFunction->getlu() + dynamicModel->getfu().transpose() * nextVx;
-        Qxx = costFunction->getlxx() + dynamicModel->getfx().transpose() * (nextVxx)*dynamicModel->getfx();
-        Quu = costFunction->getluu() + dynamicModel->getfu().transpose() * (nextVxx)*dynamicModel->getfu();
-        Qux = costFunction->getlux() + dynamicModel->getfu().transpose() * (nextVxx)*dynamicModel->getfx();
-        Quu_reg =
-            costFunction->getluu() + dynamicModel->getfu().transpose() * (nextVxx + muEye) * dynamicModel->getfu();
-        Qux_reg =
-            costFunction->getlux() + dynamicModel->getfu().transpose() * (nextVxx + muEye) * dynamicModel->getfx();
+        Qxx = costFunction->getlxx() + dynamicModel->getfx().transpose() *
+                                           (nextVxx)*dynamicModel->getfx();
+        Quu = costFunction->getluu() + dynamicModel->getfu().transpose() *
+                                           (nextVxx)*dynamicModel->getfu();
+        Qux = costFunction->getlux() + dynamicModel->getfu().transpose() *
+                                           (nextVxx)*dynamicModel->getfx();
+        Quu_reg = costFunction->getluu() + dynamicModel->getfu().transpose() *
+                                               (nextVxx + muEye) *
+                                               dynamicModel->getfu();
+        Qux_reg = costFunction->getlux() + dynamicModel->getfu().transpose() *
+                                               (nextVxx + muEye) *
+                                               dynamicModel->getfx();
 
         if (enableFullDDP) {
           Qxx += dynamicModel->computeTensorContxx(nextVx);
@@ -277,7 +298,8 @@ class DDPSolver {
           k = Eigen::Map<commandVec_t>(xOpt);
           K = -QuuInv * Qux;
           for (unsigned int i_cmd = 0; i_cmd < commandNb; i_cmd++) {
-            if ((k[i_cmd] == lowerCommandBounds[i_cmd]) | (k[i_cmd] == upperCommandBounds[i_cmd])) {
+            if ((k[i_cmd] == lowerCommandBounds[i_cmd]) |
+                (k[i_cmd] == upperCommandBounds[i_cmd])) {
               K.row(i_cmd).setZero();
             }
           }
@@ -288,8 +310,10 @@ class DDPSolver {
 
         /*nextVx = Qx - K.transpose()*Quu*k;
          nextVxx = Qxx - K.transpose()*Quu*K;*/
-        nextVx = Qx + K.transpose() * Quu * k + K.transpose() * Qu + Qux.transpose() * k;
-        nextVxx = Qxx + K.transpose() * Quu * K + K.transpose() * Qux + Qux.transpose() * K;
+        nextVx = Qx + K.transpose() * Quu * k + K.transpose() * Qu +
+                 Qux.transpose() * k;
+        nextVxx = Qxx + K.transpose() * Quu * K + K.transpose() * Qux +
+                  Qux.transpose() * K;
         nextVxx = 0.5 * (nextVxx + nextVxx.transpose());
 
         kList[i] = k;
@@ -304,8 +328,10 @@ class DDPSolver {
     // Line search to be implemented
     alpha = 1.0;
     for (unsigned int i = 0; i < T; i++) {
-      updateduList[i] = uList[i] + alpha * kList[i] + KList[i] * (updatedxList[i] - xList[i]);
-      updatedxList[i + 1] = dynamicModel->computeNextState(dt, updatedxList[i], updateduList[i]);
+      updateduList[i] =
+          uList[i] + alpha * kList[i] + KList[i] * (updatedxList[i] - xList[i]);
+      updatedxList[i + 1] =
+          dynamicModel->computeNextState(dt, updatedxList[i], updateduList[i]);
       changeAmount = fabs(previous_cost - cost) / cost;
     }
     previous_cost = cost;

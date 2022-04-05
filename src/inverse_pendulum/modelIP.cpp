@@ -1,10 +1,10 @@
+#include "ddp-actuator-solver/inverse_pendulum/modelIP.hh"
+
 #include <math.h>
-#include <eigen3/unsupported/Eigen/MatrixFunctions>
 #include <sys/time.h>
 
+#include <eigen3/unsupported/Eigen/MatrixFunctions>
 #include <iostream>
-
-#include "ddp-actuator-solver/inverse_pendulum/modelIP.hh"
 
 /*
  * x0 -> actuator position
@@ -59,7 +59,8 @@ ModelIP::ModelIP(double& mydt, bool noiseOnParameters) {
   upperCommandBounds << 1.0;
 }
 
-ModelIP::stateVec_t ModelIP::computeDeriv(double&, const stateVec_t& X, const commandVec_t& U) {
+ModelIP::stateVec_t ModelIP::computeDeriv(double&, const stateVec_t& X,
+                                          const commandVec_t& U) {
   dX[0] = X[1];
   dX[1] = (K_M / J) * U[0] - (f_VL / J) * X[1] - (1.0 / J) * X[3];
   dX[2] = R_th * U[0] * U[0] - (X[2] - X[4]) / tau_th;
@@ -69,7 +70,8 @@ ModelIP::stateVec_t ModelIP::computeDeriv(double&, const stateVec_t& X, const co
   return dX;
 }
 
-ModelIP::stateVec_t ModelIP::computeNextState(double& dt, const stateVec_t& X, const commandVec_t& U) {
+ModelIP::stateVec_t ModelIP::computeNextState(double& dt, const stateVec_t& X,
+                                              const commandVec_t& U) {
   k1 = computeDeriv(dt, X, U);
   k2 = computeDeriv(dt, X + (dt / 2) * k1, U);
   k3 = computeDeriv(dt, X + (dt / 2) * k2, U);
@@ -78,7 +80,8 @@ ModelIP::stateVec_t ModelIP::computeNextState(double& dt, const stateVec_t& X, c
   return x_next;
 }
 
-void ModelIP::computeModelDeriv(double& dt, const stateVec_t& X, const commandVec_t& U) {
+void ModelIP::computeModelDeriv(double& dt, const stateVec_t& X,
+                                const commandVec_t& U) {
   double dh = 1e-7;
   stateVec_t Xp, Xm;
   Xp = X;
@@ -86,14 +89,21 @@ void ModelIP::computeModelDeriv(double& dt, const stateVec_t& X, const commandVe
   for (unsigned int i = 0; i < stateNb; i++) {
     Xp[i] += dh / 2;
     Xm[i] -= dh / 2;
-    fx.col(i) = (computeNextState(dt, Xp, U) - computeNextState(dt, Xm, U)) / dh;
+    fx.col(i) =
+        (computeNextState(dt, Xp, U) - computeNextState(dt, Xm, U)) / dh;
     Xp = X;
     Xm = X;
   }
 }
 
-ModelIP::stateMat_t ModelIP::computeTensorContxx(const stateVec_t&) { return QxxCont; }
+ModelIP::stateMat_t ModelIP::computeTensorContxx(const stateVec_t&) {
+  return QxxCont;
+}
 
-ModelIP::commandMat_t ModelIP::computeTensorContuu(const stateVec_t&) { return QuuCont; }
+ModelIP::commandMat_t ModelIP::computeTensorContuu(const stateVec_t&) {
+  return QuuCont;
+}
 
-ModelIP::commandR_stateC_t ModelIP::computeTensorContux(const stateVec_t&) { return QuxCont; }
+ModelIP::commandR_stateC_t ModelIP::computeTensorContux(const stateVec_t&) {
+  return QuxCont;
+}

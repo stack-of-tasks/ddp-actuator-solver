@@ -1,18 +1,16 @@
-#include <iostream>
-#include <fstream>
+#include <fcntl.h>
+#include <math.h>
 #include <stdint.h>
+#include <sys/time.h>
+#include <termios.h>
 #include <unistd.h>
 
-#include <math.h>
+#include <fstream>
+#include <iostream>
 
-#include "ddpsolver.hh"
-#include "ddp-actuator-solver/romeo_actuator/romeosimpleactuator.hh"
 #include "ddp-actuator-solver/romeo_actuator/costfunctionromeoactuator.hh"
-
-#include <fcntl.h>
-#include <termios.h>
-
-#include <sys/time.h>
+#include "ddp-actuator-solver/romeo_actuator/romeosimpleactuator.hh"
+#include "ddpsolver.hh"
 
 using namespace std;
 using namespace Eigen;
@@ -93,7 +91,8 @@ DDPSolver<double, 4, 1>::stateVec_t getStateFromSerial(int& ser) {
 
   last_time = current_time;
   gettimeofday(&current_time, NULL);
-  diff_time = ((current_time.tv_sec - last_time.tv_sec) + (current_time.tv_usec - last_time.tv_usec) / 1000000.0);
+  diff_time = ((current_time.tv_sec - last_time.tv_sec) +
+               (current_time.tv_usec - last_time.tv_usec) / 1000000.0);
 
   do {
     read(ser, &received, 1);
@@ -149,7 +148,8 @@ DDPSolver<double, 4, 1>::stateVec_t getStateFromSerial(int& ser) {
   return x;
 }
 
-DDPSolver<double, 4, 1>::stateVec_t sendCurrentCommand(int& ser, DDPSolver<double, 4, 1>::commandVec_t u) {
+DDPSolver<double, 4, 1>::stateVec_t sendCurrentCommand(
+    int& ser, DDPSolver<double, 4, 1>::commandVec_t u) {
   DDPSolver<double, 4, 1>::stateVec_t x;
   uint16_t currentDes;
   currentDes = (uint16_t)((u[0]) * ((4096 * 20 * 0.005) / 3.0) + 2048);
@@ -175,7 +175,8 @@ DDPSolver<double, 4, 1>::stateVec_t sendCurrentCommand(int& ser, DDPSolver<doubl
 
   last_time = current_time;
   gettimeofday(&current_time, NULL);
-  diff_time = ((current_time.tv_sec - last_time.tv_sec) + (current_time.tv_usec - last_time.tv_usec) / 1000000.0);
+  diff_time = ((current_time.tv_sec - last_time.tv_sec) +
+               (current_time.tv_usec - last_time.tv_usec) / 1000000.0);
 
   do {
     read(ser, &received, 1);
@@ -235,7 +236,8 @@ int main() {
 
   /* Error Handling */
   if (tcgetattr(ser, &tty) != 0) {
-    std::cout << "Error " << errno << " from tcgetattr: " << strerror(errno) << std::endl;
+    std::cout << "Error " << errno << " from tcgetattr: " << strerror(errno)
+              << std::endl;
   }
 
   /* Set Baud Rate */
@@ -297,9 +299,10 @@ int main() {
 
   RomeoSimpleActuator romeoActuatorModel(dt);
   CostFunctionRomeoActuator costRomeoActuator;
-  DDPSolver<double, 4, 1> testSolverRomeoActuator(romeoActuatorModel, costRomeoActuator, DISABLE_FULLDDP,
-                                                  ENABLE_QPBOX);
-  testSolverRomeoActuator.FirstInitSolver(xinit, xDes, T, dt, iterMax, stopCrit);
+  DDPSolver<double, 4, 1> testSolverRomeoActuator(
+      romeoActuatorModel, costRomeoActuator, DISABLE_FULLDDP, ENABLE_QPBOX);
+  testSolverRomeoActuator.FirstInitSolver(xinit, xDes, T, dt, iterMax,
+                                          stopCrit);
   while (1) {
     gettimeofday(&tbegin, NULL);
     i++;
@@ -329,15 +332,19 @@ int main() {
     xinit = x - x_offset;
 
     gettimeofday(&tend, NULL);
-    texec = ((double)(1000 * (tend.tv_sec - tbegin.tv_sec) + ((tend.tv_usec - tbegin.tv_usec) / 1000))) / 1000.;
+    texec = ((double)(1000 * (tend.tv_sec - tbegin.tv_sec) +
+                      ((tend.tv_usec - tbegin.tv_usec) / 1000))) /
+            1000.;
 
     // system("clear");
-    // cout << xinit[0] << " \t " << xinit[1] << " \t " << xinit[2] << " \t " << xinit[3] << endl;
+    // cout << xinit[0] << " \t " << xinit[1] << " \t " << xinit[2] << " \t " <<
+    // xinit[3] << endl;
     system("clear");
     printf("%f\n", u[0]);
     printf("%4f\t%4f\t%4f\t%4f\n", xinit[0], xinit[1], xinit[2], xinit[3]);
 
-    printf("%f\n", ((tend.tv_sec - tbegin.tv_sec) + (tend.tv_usec - tbegin.tv_usec) / 1000000.0));
+    printf("%f\n", ((tend.tv_sec - tbegin.tv_sec) +
+                    (tend.tv_usec - tbegin.tv_usec) / 1000000.0));
   }
 
   return 0;
