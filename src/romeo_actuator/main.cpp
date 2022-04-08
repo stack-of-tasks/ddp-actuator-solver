@@ -1,11 +1,12 @@
-#include <iostream>
-#include <fstream>
-#include <time.h>
 #include <sys/time.h>
+#include <time.h>
 
 #include <ddp-actuator-solver/ddpsolver.hh>
-#include "ddp-actuator-solver/romeo_actuator/romeosimpleactuator.hh"
+#include <fstream>
+#include <iostream>
+
 #include "ddp-actuator-solver/romeo_actuator/costfunctionromeoactuator.hh"
+#include "ddp-actuator-solver/romeo_actuator/romeosimpleactuator.hh"
 
 using namespace std;
 using namespace Eigen;
@@ -30,9 +31,10 @@ int main() {
   RomeoSimpleActuator romeoActuatorModel(dt);
   RomeoSimpleActuator* romeoNoisyModel = NULL;
   CostFunctionRomeoActuator costRomeoActuator;
-  DDPSolver<double, 4, 1> testSolverRomeoActuator(romeoActuatorModel, costRomeoActuator, DISABLE_FULLDDP,
-                                                  DISABLE_QPBOX);
-  testSolverRomeoActuator.FirstInitSolver(xinit, xDes, T, dt, iterMax, stopCrit);
+  DDPSolver<double, 4, 1> testSolverRomeoActuator(
+      romeoActuatorModel, costRomeoActuator, DISABLE_FULLDDP, DISABLE_QPBOX);
+  testSolverRomeoActuator.FirstInitSolver(xinit, xDes, T, dt, iterMax,
+                                          stopCrit);
 
   int N = 100;
   gettimeofday(&tbegin, NULL);
@@ -44,7 +46,9 @@ int main() {
   uList = lastTraj.uList;
   unsigned int iter = lastTraj.iter;
 
-  texec = ((double)(1000 * (tend.tv_sec - tbegin.tv_sec) + ((tend.tv_usec - tbegin.tv_usec) / 1000))) / 1000.;
+  texec = ((double)(1000 * (tend.tv_sec - tbegin.tv_sec) +
+                    ((tend.tv_usec - tbegin.tv_usec) / 1000))) /
+          1000.;
   texec /= N;
 
   cout << endl;
@@ -58,13 +62,15 @@ int main() {
   if (fichier1) {
     fichier1 << "tau,tauDot,q,qDot,u" << endl;
     x = xinit;
-    fichier1 << x(0, 0) << "," << x(1, 0) << "," << x(2, 0) << "," << x(3, 0) << "," << uList[0] << endl;
+    fichier1 << x(0, 0) << "," << x(1, 0) << "," << x(2, 0) << "," << x(3, 0)
+             << "," << uList[0] << endl;
     for (unsigned i = 1; i < T; i++) {
       x = romeoActuatorModel.computeNextState(dt, x, uList[i - 1]);
-      fichier1 << x(0, 0) << "," << x(1, 0) << "," << x(2, 0) << "," << x(3, 0) << "," << uList[i - 1] << endl;
+      fichier1 << x(0, 0) << "," << x(1, 0) << "," << x(2, 0) << "," << x(3, 0)
+               << "," << uList[i - 1] << endl;
     }
-    fichier1 << xList[T](0, 0) << "," << xList[T](1, 0) << "," << xList[T](2, 0) << "," << xList[T](3, 0) << ","
-             << uList[T - 1](0, 0) << endl;
+    fichier1 << xList[T](0, 0) << "," << xList[T](1, 0) << "," << xList[T](2, 0)
+             << "," << xList[T](3, 0) << "," << uList[T - 1](0, 0) << endl;
     fichier1.close();
   } else
     cerr << "erreur ouverte fichier" << endl;
@@ -78,9 +84,11 @@ int main() {
       x = xinit;
       for (unsigned int i = 1; i < T; i++) {
         x = romeoNoisyModel->computeNextState(dt, x, uList[i - 1]);
-        fichier2 << x(0, 0) << "," << x(1, 0) << "," << x(2, 0) << "," << x(3, 0) << "," << uList[i - 1] << endl;
+        fichier2 << x(0, 0) << "," << x(1, 0) << "," << x(2, 0) << ","
+                 << x(3, 0) << "," << uList[i - 1] << endl;
       }
-      fichier2 << xList[T](0, 0) << "," << xList[T](1, 0) << "," << xList[T](2, 0) << "," << xList[T](3, 0) << ","
+      fichier2 << xList[T](0, 0) << "," << xList[T](1, 0) << ","
+               << xList[T](2, 0) << "," << xList[T](3, 0) << ","
                << uList[T - 1](0, 0) << endl;
       delete romeoNoisyModel;
     }

@@ -1,8 +1,8 @@
 #include "ddp-actuator-solver/temperature_control/costtemp.hh"
 
 CostTemp::CostTemp() {
-  Q << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0;
+  Q << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
   R << 0.0001;
 
   lxx = Q;
@@ -14,13 +14,16 @@ CostTemp::CostTemp() {
   running_cost = 0;
 }
 
-void CostTemp::computeCostAndDeriv(const stateVec_t& X, const stateVec_t& Xdes, const commandVec_t& U) {
-  running_cost = ((X - Xdes).transpose() * Q * (X - Xdes) + U.transpose() * R * U)(0, 0);
+void CostTemp::computeCostAndDeriv(const stateVec_t& X, const stateVec_t& Xdes,
+                                   const commandVec_t& U) {
+  running_cost =
+      ((X - Xdes).transpose() * Q * (X - Xdes) + U.transpose() * R * U)(0, 0);
   lx = Q * (X - Xdes);
   lu = R * U;
 }
 
-void CostTemp::computeFinalCostAndDeriv(const stateVec_t& X, const stateVec_t& Xdes) {
+void CostTemp::computeFinalCostAndDeriv(const stateVec_t& X,
+                                        const stateVec_t& Xdes) {
   lx = 1.0 * Q * (X - Xdes);
   lxx = 1.0 * Q;
 }

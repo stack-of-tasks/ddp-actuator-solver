@@ -1,6 +1,6 @@
-#include <math.h>
-
 #include "ddp-actuator-solver/romeo_actuator/romeotorqueactuator.hh"
+
+#include <math.h>
 #define pi M_PI
 
 const double RomeoTorqueActuator::k = 588.0;
@@ -28,7 +28,8 @@ RomeoTorqueActuator::RomeoTorqueActuator(double& mydt) {
 
   Id.setIdentity();
 
-  A << 0.0, 0.0, k, -k / R, 0.0, 0.0, 1.0, 0.0, -1.0 / Jl, 0.0, -fvl / Jl, 0.0, 1 / (R * Jm), 0.0, 0.0, -fvm / Jm;
+  A << 0.0, 0.0, k, -k / R, 0.0, 0.0, 1.0, 0.0, -1.0 / Jl, 0.0, -fvl / Jl, 0.0,
+      1 / (R * Jm), 0.0, 0.0, -fvm / Jm;
   B << 0.0, 0.0, 0.0, Kt / Jm;
 
   fu << 0.0, 0.0, 0.0, Kt / Jm;
@@ -54,8 +55,8 @@ RomeoTorqueActuator::RomeoTorqueActuator(double& mydt) {
   upperCommandBounds << 1.0;
 }
 
-RomeoTorqueActuator::stateVec_t RomeoTorqueActuator::computeNextState(double& dt, const stateVec_t& X,
-                                                                      const commandVec_t& U) {
+RomeoTorqueActuator::stateVec_t RomeoTorqueActuator::computeNextState(
+    double& dt, const stateVec_t& X, const commandVec_t& U) {
   stateVec_t x_next, k1, k2, k3, k4;
   k1 = A * X + B * U;
   k2 = A * (X + (dt / 2) * k1) + B * U;
@@ -66,7 +67,8 @@ RomeoTorqueActuator::stateVec_t RomeoTorqueActuator::computeNextState(double& dt
   return x_next;
 }
 
-void RomeoTorqueActuator::computeModelDeriv(double& dt, const stateVec_t& X, const commandVec_t& U) {
+void RomeoTorqueActuator::computeModelDeriv(double& dt, const stateVec_t& X,
+                                            const commandVec_t& U) {
   double dh = 1e-7;
   stateVec_t Xp, Xm;
   Xp = X;
@@ -74,14 +76,24 @@ void RomeoTorqueActuator::computeModelDeriv(double& dt, const stateVec_t& X, con
   for (int i = 0; i < 4; i++) {
     Xp[i] += dh / 2;
     Xm[i] -= dh / 2;
-    fx.col(i) = (computeNextState(dt, Xp, U) - computeNextState(dt, Xm, U)) / dh;
+    fx.col(i) =
+        (computeNextState(dt, Xp, U) - computeNextState(dt, Xm, U)) / dh;
     Xp = X;
     Xm = X;
   }
 }
 
-RomeoTorqueActuator::stateMat_t RomeoTorqueActuator::computeTensorContxx(const stateVec_t&) { return QxxCont; }
+RomeoTorqueActuator::stateMat_t RomeoTorqueActuator::computeTensorContxx(
+    const stateVec_t&) {
+  return QxxCont;
+}
 
-RomeoTorqueActuator::commandMat_t RomeoTorqueActuator::computeTensorContuu(const stateVec_t&) { return QuuCont; }
+RomeoTorqueActuator::commandMat_t RomeoTorqueActuator::computeTensorContuu(
+    const stateVec_t&) {
+  return QuuCont;
+}
 
-RomeoTorqueActuator::commandR_stateC_t RomeoTorqueActuator::computeTensorContux(const stateVec_t&) { return QuxCont; }
+RomeoTorqueActuator::commandR_stateC_t RomeoTorqueActuator::computeTensorContux(
+    const stateVec_t&) {
+  return QuxCont;
+}

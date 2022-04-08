@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import matplotlib.pyplot as pl
 import csv
 
@@ -6,10 +7,10 @@ tauDotList = []
 qList = []
 qDotList = []
 uList = []
-''' position '''
-path = '../_build/cpp/resultsBench.csv'
+""" position """
+path = "../_build/cpp/resultsBench.csv"
 
-with open(path, 'r') as dataFile:
+with open(path, "r") as dataFile:
     reader = csv.reader(dataFile)
     i = 0
     for row in reader:
@@ -55,7 +56,7 @@ while 1:
     qList = []
     qDotList = []
     uList = []
-    with open(path, 'r') as dataFile:
+    with open(path, "r") as dataFile:
         reader = csv.reader(dataFile)
         i = 0
         for row in reader:

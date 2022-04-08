@@ -6,12 +6,16 @@
 class pyreneActuator : public DynamicModel<double, 2, 1> {
  public:
   pyreneActuator();
-  void setLoadParam(const double& mass, const double& coordX, const double& coordY);
+  void setLoadParam(const double& mass, const double& coordX,
+                    const double& coordY);
   void setLoadMass(const double& mass);
   void removeLoad();
-  stateVec_t computeStateDeriv(double&, const stateVec_t& X, const commandVec_t& U);
-  stateVec_t computeNextState(double& dt, const stateVec_t& X, const commandVec_t& U);
-  void computeModelDeriv(double& dt, const stateVec_t& X, const commandVec_t& U);
+  stateVec_t computeStateDeriv(double&, const stateVec_t& X,
+                               const commandVec_t& U);
+  stateVec_t computeNextState(double& dt, const stateVec_t& X,
+                              const commandVec_t& U);
+  void computeModelDeriv(double& dt, const stateVec_t& X,
+                         const commandVec_t& U);
   stateMat_t computeTensorContxx(const stateVec_t& nextVx);
   commandMat_t computeTensorContuu(const stateVec_t& nextVx);
   commandR_stateC_t computeTensorContux(const stateVec_t& nextVx);

@@ -1,13 +1,15 @@
+#!/usr/bin/env python
 import csv
 from matplotlib import pyplot as plt
-''' position '''
-path1 = '../_build/examples/temperature_control/results1.csv'
-path2 = '../_build/examples/temperature_control/results2.csv'
+
+""" position """
+path1 = "../_build/examples/temperature_control/results1.csv"
+path2 = "../_build/examples/temperature_control/results2.csv"
 
 names = []
 data = []
 
-with open(path1, 'r') as dataFile1:
+with open(path1, "r") as dataFile1:
     reader = csv.reader(dataFile1)
     i = 0
     for row in reader:
@@ -25,7 +27,7 @@ with open(path1, 'r') as dataFile1:
             for name in row:
                 names.append(name)
             i = 1
-'''with open(path2,'r') as dataFile2:
+"""with open(path2,'r') as dataFile2:
     reader = csv.reader(dataFile2)
     i = 0
     j = -1
@@ -55,7 +57,7 @@ with open(path1, 'r') as dataFile1:
             N = int(row[1]) - 1
             i = 2
         if i==0:
-            i = 1'''
+            i = 1"""
 
 fig1 = plt.figure()
 for i in range(S_NB):

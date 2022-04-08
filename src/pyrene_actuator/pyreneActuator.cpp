@@ -1,7 +1,9 @@
+#include "ddp-actuator-solver/pyrene_actuator/pyreneActuator.hh"
+
 #include <math.h>
+
 #include <cmath>
 #include <iostream>
-#include "ddp-actuator-solver/pyrene_actuator/pyreneActuator.hh"
 #define pi M_PI
 
 const double pyreneActuator::K = 10.6;
@@ -54,7 +56,8 @@ pyreneActuator::pyreneActuator() {
   upperCommandBounds << 1.0;
 }
 
-void pyreneActuator::setLoadParam(const double& mass, const double& coordX, const double& coordY) {
+void pyreneActuator::setLoadParam(const double& mass, const double& coordX,
+                                  const double& coordY) {
   L = mass;
   l_y = coordY;
   l_x = coordX;
@@ -67,17 +70,20 @@ void pyreneActuator::setLoadMass(const double& mass) {
 
 void pyreneActuator::removeLoad() { L = 0.0; }
 
-pyreneActuator::stateVec_t pyreneActuator::computeStateDeriv(double&, const stateVec_t& X, const commandVec_t& U) {
+pyreneActuator::stateVec_t pyreneActuator::computeStateDeriv(
+    double&, const stateVec_t& X, const commandVec_t& U) {
   stateVec_t dX;
 
   dX[0] = X[1];
   dX[1] = (1 / J) * (K * U[0] - F_v * X[1] - F_s * tanh(mu * X[1])) -
-          (M * g / J) * (cos(X[0]) * c_x + sin(X[0]) * c_y) - (L * g / J) * (cos(X[0]) * l_x + sin(X[0]) * l_y) -
+          (M * g / J) * (cos(X[0]) * c_x + sin(X[0]) * c_y) -
+          (L * g / J) * (cos(X[0]) * l_x + sin(X[0]) * l_y) -
           (offset_m + offset_j);
   return dX;
 }
 
-pyreneActuator::stateVec_t pyreneActuator::computeNextState(double& dt, const stateVec_t& X, const commandVec_t& U) {
+pyreneActuator::stateVec_t pyreneActuator::computeNextState(
+    double& dt, const stateVec_t& X, const commandVec_t& U) {
   stateVec_t x_next, k1, k2, k3, k4;
   k1 = computeStateDeriv(dt, X, U);
   k2 = computeStateDeriv(dt, X + (dt / 2) * k1, U);
@@ -87,7 +93,8 @@ pyreneActuator::stateVec_t pyreneActuator::computeNextState(double& dt, const st
   return x_next;
 }
 
-void pyreneActuator::computeModelDeriv(double& dt, const stateVec_t& X, const commandVec_t& U) {
+void pyreneActuator::computeModelDeriv(double& dt, const stateVec_t& X,
+                                       const commandVec_t& U) {
   double dh = 1e-7;
   stateVec_t Xp, Xm;
   Xp = X;
@@ -95,14 +102,24 @@ void pyreneActuator::computeModelDeriv(double& dt, const stateVec_t& X, const co
   for (unsigned int i = 0; i < stateNb; i++) {
     Xp[i] += dh / 2;
     Xm[i] -= dh / 2;
-    fx.col(i) = (computeNextState(dt, Xp, U) - computeNextState(dt, Xm, U)) / dh;
+    fx.col(i) =
+        (computeNextState(dt, Xp, U) - computeNextState(dt, Xm, U)) / dh;
     Xp = X;
     Xm = X;
   }
 }
 
-pyreneActuator::stateMat_t pyreneActuator::computeTensorContxx(const stateVec_t&) { return QxxCont; }
+pyreneActuator::stateMat_t pyreneActuator::computeTensorContxx(
+    const stateVec_t&) {
+  return QxxCont;
+}
 
-pyreneActuator::commandMat_t pyreneActuator::computeTensorContuu(const stateVec_t&) { return QuuCont; }
+pyreneActuator::commandMat_t pyreneActuator::computeTensorContuu(
+    const stateVec_t&) {
+  return QuuCont;
+}
 
-pyreneActuator::commandR_stateC_t pyreneActuator::computeTensorContux(const stateVec_t&) { return QuxCont; }
+pyreneActuator::commandR_stateC_t pyreneActuator::computeTensorContux(
+    const stateVec_t&) {
+  return QuxCont;
+}

@@ -1,14 +1,14 @@
-#include <iostream>
-#include <fstream>
+#include <sys/time.h>
+#include <time.h>
 
 #include <ddp-actuator-solver/ddpsolver.hh>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
+
 #include "ddp-actuator-solver/pyrene_actuator/pyreneActuator.hh"
 #include "ddp-actuator-solver/pyrene_actuator/pyreneCostFunction.hh"
-
-#include <time.h>
-#include <sys/time.h>
-#include <vector>
-#include <string>
 
 using namespace std;
 using namespace Eigen;
@@ -66,7 +66,8 @@ int main(int argc, char *argv[]) {
   // costFunction.setCostGainState(Q);
   // costFunction.setCostGainTorqueConstraint(P);
   // pyreneActuator.setLoadParam(30.0,-0.021481595, 0.10);
-  DDPSolver<double, 2, 1> testSolverActuator(pyreneActuator, costFunction, DISABLE_FULLDDP, DISABLE_QPBOX);
+  DDPSolver<double, 2, 1> testSolverActuator(pyreneActuator, costFunction,
+                                             DISABLE_FULLDDP, DISABLE_QPBOX);
 
   double dx_joint;
   dx_joint = 0.5422;
@@ -90,7 +91,8 @@ int main(int argc, char *argv[]) {
     xinit << xList[1](0, 0), xList[1](1, 0);
     xDes << vec_joint_pos[i + 1], 0.0;
 
-    texec += ((double)(tend.tv_sec - tbegin.tv_sec) * 1000.0 + ((double)(tend.tv_usec - tbegin.tv_usec) / 1000.0));
+    texec += ((double)(tend.tv_sec - tbegin.tv_sec) * 1000.0 +
+              ((double)(tend.tv_usec - tbegin.tv_usec) / 1000.0));
     cout << "texec:" << texec << std::endl;
 
     string ResultNumber;
@@ -98,22 +100,24 @@ int main(int argc, char *argv[]) {
     convert << i;
     ResultNumber = convert.str();
 
-    ofstream file(("results_sinu/results_sinu" + ResultNumber + ".csv").c_str(), ios::out | ios::trunc);
+    ofstream file(("results_sinu/results_sinu" + ResultNumber + ".csv").c_str(),
+                  ios::out | ios::trunc);
     if (file) {
       file << "q,qdes,qDot,qDotDes,u" << endl;
       for (unsigned int i = 0; i < T; i++) {
-        file << xList[i](0, 0) << "," << xDes[0] << "," << xList[i](1, 0) << "," << xDes[1] << ","
-             << uList[i - 1](0, 0) << endl;
+        file << xList[i](0, 0) << "," << xDes[0] << "," << xList[i](1, 0) << ","
+             << xDes[1] << "," << uList[i - 1](0, 0) << endl;
       }
-      file << xList[T](0, 0) << "," << xDes[0] << "," << xList[T](1, 0) << "," << xDes[1] << "," << uList[T - 1](0, 0)
-           << endl;
+      file << xList[T](0, 0) << "," << xDes[0] << "," << xList[T](1, 0) << ","
+           << xDes[1] << "," << uList[T - 1](0, 0) << endl;
       file.close();
     } else {
       cerr << "erreur ouverte fichier" << endl;
     }
 
     if (i == 0) {
-      ofstream fichier(("results_sinu/results_sinu.csv"), ios::out | ios::trunc);
+      ofstream fichier(("results_sinu/results_sinu.csv"),
+                       ios::out | ios::trunc);
       if (fichier) {
         fichier << "q,qdes,qDot,qDotDes,u" << endl;
       }
@@ -121,8 +125,8 @@ int main(int argc, char *argv[]) {
 
     ofstream fichier(("results_sinu/results_sinu.csv"), ios::out | ios::app);
     if (fichier) {
-      fichier << xList[1](0, 0) << "," << xDes[0] << "," << xList[1](1, 0) << "," << xDes[1] << "," << uList[0](0, 0)
-              << endl;
+      fichier << xList[1](0, 0) << "," << xDes[0] << "," << xList[1](1, 0)
+              << "," << xDes[1] << "," << uList[0](0, 0) << endl;
       fichier.close();
     } else {
       cerr << "erreur ouverte fichier" << endl;

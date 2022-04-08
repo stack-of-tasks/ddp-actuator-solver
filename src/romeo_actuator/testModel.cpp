@@ -1,12 +1,12 @@
-#include <iostream>
-#include <fstream>
-
-#include <time.h>
 #include <sys/time.h>
+#include <time.h>
 
 #include <ddp-actuator-solver/ddpsolver.hh>
-#include "ddp-actuator-solver/romeo_actuator/romeosimpleactuator.hh"
+#include <fstream>
+#include <iostream>
+
 #include "ddp-actuator-solver/romeo_actuator/costfunctionromeoactuator.hh"
+#include "ddp-actuator-solver/romeo_actuator/romeosimpleactuator.hh"
 
 using namespace std;
 using namespace Eigen;
@@ -57,7 +57,8 @@ int main() {
   if (fichier) {
     fichier << "tau,tauDot,q,qDot,u" << endl;
     for (unsigned int i = 0; i < N; i++)
-      fichier << xList[i](0, 0) << "," << xList[i](1, 0) << "," << xList[i](2, 0) << "," << xList[i](3, 0) << ","
+      fichier << xList[i](0, 0) << "," << xList[i](1, 0) << ","
+              << xList[i](2, 0) << "," << xList[i](3, 0) << ","
               << uList[i](0, 0) << endl;
     fichier.close();
   } else

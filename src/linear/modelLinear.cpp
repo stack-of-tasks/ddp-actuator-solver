@@ -1,10 +1,10 @@
+#include "ddp-actuator-solver/linear/modelLinear.hh"
+
 #include <math.h>
-#include <eigen3/unsupported/Eigen/MatrixFunctions>
 #include <sys/time.h>
 
+#include <eigen3/unsupported/Eigen/MatrixFunctions>
 #include <iostream>
-
-#include "ddp-actuator-solver/linear/modelLinear.hh"
 
 /*
  * x0 -> pendulum angle
@@ -44,13 +44,16 @@ ModelLinear::ModelLinear(double& mydt, bool) {
   upperCommandBounds << 1.0;
 }
 
-ModelLinear::stateVec_t ModelLinear::computeDeriv(double&, const stateVec_t& X, const commandVec_t& U) {
+ModelLinear::stateVec_t ModelLinear::computeDeriv(double&, const stateVec_t& X,
+                                                  const commandVec_t& U) {
   dX[0] = X[1];
   dX[1] = U[0];
   return dX;
 }
 
-ModelLinear::stateVec_t ModelLinear::computeNextState(double&, const stateVec_t& X, const commandVec_t& U) {
+ModelLinear::stateVec_t ModelLinear::computeNextState(double&,
+                                                      const stateVec_t& X,
+                                                      const commandVec_t& U) {
   /*k1 = computeDeriv(dt, X, U);
   k2 = computeDeriv(dt, X + (dt / 2) * k1, U);
   k3 = computeDeriv(dt, X + (dt / 2) * k2, U);
@@ -60,7 +63,8 @@ ModelLinear::stateVec_t ModelLinear::computeNextState(double&, const stateVec_t&
   return x_next;
 }
 
-void ModelLinear::computeModelDeriv(double&, const stateVec_t&, const commandVec_t&) {
+void ModelLinear::computeModelDeriv(double&, const stateVec_t&,
+                                    const commandVec_t&) {
   /*double dh = 1e-7;
   stateVec_t Xp, Xm;
   commandVec_t Up, Um;
@@ -88,8 +92,15 @@ void ModelLinear::computeModelDeriv(double&, const stateVec_t&, const commandVec
   }*/
 }
 
-ModelLinear::stateMat_t ModelLinear::computeTensorContxx(const stateVec_t&) { return QxxCont; }
+ModelLinear::stateMat_t ModelLinear::computeTensorContxx(const stateVec_t&) {
+  return QxxCont;
+}
 
-ModelLinear::commandMat_t ModelLinear::computeTensorContuu(const stateVec_t&) { return QuuCont; }
+ModelLinear::commandMat_t ModelLinear::computeTensorContuu(const stateVec_t&) {
+  return QuuCont;
+}
 
-ModelLinear::commandR_stateC_t ModelLinear::computeTensorContux(const stateVec_t&) { return QuxCont; }
+ModelLinear::commandR_stateC_t ModelLinear::computeTensorContux(
+    const stateVec_t&) {
+  return QuxCont;
+}

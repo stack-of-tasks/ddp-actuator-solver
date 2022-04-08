@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import matplotlib.pyplot as pl
 import csv
 
@@ -18,18 +19,18 @@ tauDotListList = []
 qListList = []
 qDotListList = []
 uListList = []
-''' position '''
-path = '../_build/cpp/resultsMPC.csv'
+""" position """
+path = "../_build/cpp/resultsMPC.csv"
 T = 5
 N = 30
 
-with open(path, 'r') as dataFile:
+with open(path, "r") as dataFile:
     reader = csv.reader(dataFile)
     i = 0
     j = -1
     for row in reader:
         if i == 2:
-            if (j < T):
+            if j < T:
                 tauList.append(float(row[0]))
                 tauDotList.append(float(row[1]))
                 qList.append(float(row[2]))
@@ -87,11 +88,11 @@ for i in range(0, N, 20):
     dx1.plot(range(i, i + T + 1, 1), qDotListList[i])
     ax2.plot(range(i, i + T + 1, 1), uListList[i])
 
-ax1.plot(finaltauList, 'g+')
-bx1.plot(finaltauDotList, 'g+')
-cx1.plot(finalqList, 'g+')
-dx1.plot(finalqDotList, 'g+')
-ax2.plot(finaluList, 'g+')
+ax1.plot(finaltauList, "g+")
+bx1.plot(finaltauDotList, "g+")
+cx1.plot(finalqList, "g+")
+dx1.plot(finalqDotList, "g+")
+ax2.plot(finaluList, "g+")
 
 ax1.grid()
 bx1.grid()

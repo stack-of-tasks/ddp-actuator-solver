@@ -1,12 +1,12 @@
-#include <iostream>
-#include <fstream>
+#include <sys/time.h>
+#include <time.h>
 
 #include <ddp-actuator-solver/ddpsolver.hh>
-#include "ddp-actuator-solver/romeo_actuator/romeotorqueactuator.hh"
-#include "ddp-actuator-solver/romeo_actuator/costfunctionromeoactuator.hh"
+#include <fstream>
+#include <iostream>
 
-#include <time.h>
-#include <sys/time.h>
+#include "ddp-actuator-solver/romeo_actuator/costfunctionromeoactuator.hh"
+#include "ddp-actuator-solver/romeo_actuator/romeotorqueactuator.hh"
 
 using namespace std;
 using namespace Eigen;
@@ -30,9 +30,10 @@ int main() {
 
   RomeoTorqueActuator romeoActuatorModel(dt);
   CostFunctionRomeoActuator costRomeoActuator;
-  DDPSolver<double, 4, 1> testSolverRomeoActuator(romeoActuatorModel, costRomeoActuator, DISABLE_FULLDDP,
-                                                  ENABLE_QPBOX);
-  testSolverRomeoActuator.FirstInitSolver(xinit, xDes, T, dt, iterMax, stopCrit);
+  DDPSolver<double, 4, 1> testSolverRomeoActuator(
+      romeoActuatorModel, costRomeoActuator, DISABLE_FULLDDP, ENABLE_QPBOX);
+  testSolverRomeoActuator.FirstInitSolver(xinit, xDes, T, dt, iterMax,
+                                          stopCrit);
 
   int N = 100;
   gettimeofday(&tbegin, NULL);
@@ -44,7 +45,9 @@ int main() {
   uList = lastTraj.uList;
   unsigned int iter = lastTraj.iter;
 
-  texec = ((double)(1000 * (tend.tv_sec - tbegin.tv_sec) + ((tend.tv_usec - tbegin.tv_usec) / 1000))) / 1000.;
+  texec = ((double)(1000 * (tend.tv_sec - tbegin.tv_sec) +
+                    ((tend.tv_usec - tbegin.tv_usec) / 1000))) /
+          1000.;
   texec /= N;
 
   cout << endl;
@@ -58,10 +61,11 @@ int main() {
   if (fichier) {
     fichier << "tau,tauDot,q,qDot,u" << endl;
     for (int i = 0; i < T; i++)
-      fichier << xList[i](0, 0) << "," << xList[i](1, 0) << "," << xList[i](2, 0) << "," << xList[i](3, 0) << ","
+      fichier << xList[i](0, 0) << "," << xList[i](1, 0) << ","
+              << xList[i](2, 0) << "," << xList[i](3, 0) << ","
               << uList[i](0, 0) << endl;
-    fichier << xList[T](0, 0) << "," << xList[T](1, 0) << "," << xList[T](2, 0) << "," << xList[T](3, 0) << ","
-            << uList[T - 1](0, 0) << endl;
+    fichier << xList[T](0, 0) << "," << xList[T](1, 0) << "," << xList[T](2, 0)
+            << "," << xList[T](3, 0) << "," << uList[T - 1](0, 0) << endl;
     fichier.close();
   } else
     cerr << "erreur ouverte fichier" << endl;
