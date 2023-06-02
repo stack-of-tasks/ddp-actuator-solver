@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-import matplotlib.pyplot as pl
 import csv
+
+import matplotlib.pyplot as pl
 
 tauList = []
 tauDotList = []
