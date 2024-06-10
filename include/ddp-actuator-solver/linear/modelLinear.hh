@@ -6,7 +6,7 @@
 class ModelLinear : public DynamicModel<double, 2, 1> {
  public:
   ModelLinear(double& mydt, bool noiseOnParameters = 0);
-  virtual ~ModelLinear(){};
+  virtual ~ModelLinear() {};
 
  private:
  protected:
