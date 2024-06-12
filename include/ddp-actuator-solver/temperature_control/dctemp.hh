@@ -6,7 +6,7 @@
 class DCTemp : public DynamicModel<double, 5, 1> {
  public:
   DCTemp(bool noiseOnParameters = 0);
-  virtual ~DCTemp(){};
+  virtual ~DCTemp() {};
 
  private:
  protected:

@@ -6,7 +6,7 @@
 class RomeoSimpleActuator : public DynamicModel<double, 4, 1> {
  public:
   RomeoSimpleActuator(double& mydt, bool noiseOnParameters = 0);
-  virtual ~RomeoSimpleActuator(){};
+  virtual ~RomeoSimpleActuator() {};
 
  private:
  protected:

@@ -6,7 +6,7 @@
 class ModelIP : public DynamicModel<double, 5, 1> {
  public:
   ModelIP(double& mydt, bool noiseOnParameters = 0);
-  virtual ~ModelIP(){};
+  virtual ~ModelIP() {};
 
  private:
  protected:
