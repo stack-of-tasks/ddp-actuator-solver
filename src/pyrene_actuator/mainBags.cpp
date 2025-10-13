@@ -32,7 +32,7 @@ vector<double> fillVector(string repoBags, string fileName) {
   return fillVector;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   if (argc != 2) {
     cerr << "Convention: mainBags nameRepoBags " << endl;
     return 1;
